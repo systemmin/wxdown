@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>照片列表</title>
+    <style>
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-left: 250px;
+        }
+
+        img {
+            width: 318px;
+            height: 400px;
+            object-fit: contain;
+            outline: 1px dotted #ccc;
+        }
+    </style>
+</head>
+<body>
+<main>
+
+</main>
+<script>
+    window.addEventListener("message", (e) => {
+        console.log(e)
+        const element = document.querySelector("main");
+        const {base, data} = JSON.parse(e.data);
+        console.log(data)
+        data.split(',').forEach(item => {
+            let url = "/wx/" + base + "/images/" + item;
+            let img = document.createElement("img");
+            img.src = url;
+            img.loading = "lazy";
+            element.append(img);
+        })
+    })
+</script>
+</body>
+</html>

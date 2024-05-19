@@ -1,0 +1,22 @@
+# 服务端口
+port: 81
+
+# 本地数据文件存储路径
+path: ./data
+
+# HTML 转 PDF 配置
+# 下载 wkhtmltopdf 路径 https://wkhtmltopdf.org/downloads.html
+# window 建议下载后将 wkhtmltopdf目录下载所有内容拷贝到项目根目录下
+wkhtmltopdf:
+  # true 开启 false 关闭 默认关闭
+  enable: true
+  # linux 例如：/usr/local/wkhtmltopdf/bin/
+  # window 例如：E:\Program Files\wkhtmltopdf\bin
+  path: 
+
+# 采集线程配置
+thread:
+  # 同时下载 HTML 线程数量
+  html: 5
+  # 同时下载图片线程数量
+  image: 10

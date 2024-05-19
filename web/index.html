@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>文章列表</title>
+    <link rel="stylesheet" href="static/css/main.css">
+</head>
+<body>
+<aside>
+    <!-- 公众号-->
+    <nav>
+        <div id="task" class="task"><span>📁</span>采集任务</div>
+        <ul id="wx-menus">
+        </ul>
+    </nav>
+    <!--  文件列表  -->
+    <nav class="details">
+        <ul id="wx-article"></ul>
+    </nav>
+</aside>
+
+<section id="section">
+    <h2>文章地址列表</h2>
+    <label>
+        <textarea name="" placeholder="请输入文章地址，一行一个地址"></textarea>
+    </label>
+    <br>
+    <button id="start">开始采集</button>
+    <hr>
+    <div id="stats" class="stats"></div>
+</section>
+<iframe id="iframe" name="child" width="100%" src="images.html" frameborder="0"></iframe>
+
+<script>
+    // 发起一个 articles get 请求获取文章列表
+    const details = document.querySelector('.details');
+    const iframe = document.getElementById('iframe');
+    const section = document.getElementById('section');
+    iframe.style.display = 'none';
+    details.style.display = 'none';
+
+    /**
+     * 事件监听
+     * @param event
+     */
+    const onDetail = (event) => {
+        details.style.display = 'block';
+        iframe.style.display = 'block';
+        section.style.display = 'none';
+        const target = event.target;
+        // 获取当前点击的元素
+        const active = document.querySelector('.active');
+        // 如果当前元素有 active 类名，则移除
+        if (active) {
+            active.classList.remove('active');
+        }
+        // 给当前元素添加 active 类名
+        target.parentElement.classList.add('active');
+        const listData = JSON.parse(target.dataset.files) || [];
+        console.log(listData)
+        const innerText = target.innerText;
+        if (listData.length > 0) {
+            const listStr = listData.map((item) => {
+                let str = `<time style="color:#fff;font-size: 12px">${item.createTime}</time><br><a target="child" href="/wx/${innerText}/html/${item.name}">${item.original}</a><br>`;
+                if (item.isPdf) {
+                    str += `<div style="text-align: end;"><a style="color:#fff;font-size: 13px;font-style: oblique;" target="_blank" href="/wx/${innerText}/pdf/${item.createTime}-${item.original}.pdf">预览PDF</a></div>`
+                }
+                return `<li>${str}</li>`
+            }).join('')
+            const html = `<ul>${listStr}</ul>`
+            document.getElementById('wx-article').innerHTML = html;
+        } else {
+            document.getElementById('wx-article').innerHTML = '暂无数据';
+        }
+    }
+    /**
+     * 获取文章列表
+     * @returns {Promise<void>}
+     */
+    const getArticles = async () => {
+        try {
+            const data = await fetch('articles').then(res => res.json());
+            let stats_html = '';
+            data.forEach(item => {
+                const {name, images, total, files} = item;
+                const element = document.createElement('li');
+                // ================
+                const wxTitle = document.createElement('div');
+                wxTitle.className = "wx-title"
+                wxTitle.innerText = name;
+                wxTitle.dataset.images = images ? images : [];
+                wxTitle.dataset.files = JSON.stringify(files);
+                wxTitle.addEventListener('click', (event, name) => {
+                    console.log('wx-title', name);
+                    onDetail(event)
+                })
+                const open = document.createElement('div');
+                open.className = "open"
+                const openImage = document.createElement('span');
+                openImage.className = "open-image"
+                openImage.innerText = "🖼️"
+                openImage.addEventListener('click', (event) => {
+                    section.style.display = 'none'
+                    details.style.display = 'none';
+                    iframe.src = '/images.html'
+                    iframe.style.display = 'block'
+                    const previousElementSibling = event.target.parentElement.previousElementSibling;
+                    const images1 = previousElementSibling.dataset.images;
+                    console.log('open-image', images1);
+                    setTimeout(() => {
+                        const data = {
+                            base: previousElementSibling.innerText,
+                            data: images1
+                        }
+                        iframe.contentWindow.postMessage(JSON.stringify(data))
+                    }, 100)
+                })
+                const openFolder = document.createElement('span');
+                openFolder.className = "open-folder";
+                openFolder.innerText = "📂";
+                openFolder.addEventListener('click', (event) => {
+                    fetch("/open/"+event.target.parentElement.previousElementSibling.innerText,{mode:"no-cors"})
+                })
+                open.append(openImage)
+                open.append(openFolder)
+
+                element.append(wxTitle)
+                element.append(open)
+
+                document.getElementById('wx-menus').append(element);
+
+                stats_html += `<div><div>${total}</div><div><strong>${name}</strong></div></div>`;
+            })
+            document.getElementById('stats').innerHTML = stats_html;
+        } catch (e) {
+            console.error(e)
+        }
+    }
+    // 匿名函数
+    (() => {
+        getArticles()
+    })()
+
+    // 采集任务
+    document.getElementById('task').addEventListener('click', () => {
+        document.getElementById('section').style.display = 'block'
+        iframe.style.display = 'none';
+        details.style.display = 'none';
+        document.getElementById('wx-menus').innerHTML = ''
+        getArticles()
+    })
+
+    // 监听 iframe 切换
+    document.addEventListener("click", function (event) {
+        if (event.target.id === "start") {
+            console.log("采集")
+            const value = document.querySelector("textarea").value;
+            if (value) {
+                const strings = value.split("\n");
+                if (strings.length === 1) {
+                    fetch("/gather/" + value).then(res => res.json()).then(data => {
+                        if (data.ok) {
+                            alert("采集完成");
+                            window.location.reload()
+                        }
+                    })
+                } else {
+                    fetch("/gather/", {
+                        method: "POST",
+                        body: JSON.stringify(strings)
+                    }).then(res => res.json()).then(data => {
+                        if (data.ok) {
+                            alert("采集完成");
+                            window.location.reload()
+                        }
+                    })
+                }
+
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
