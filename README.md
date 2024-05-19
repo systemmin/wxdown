@@ -216,15 +216,15 @@ javascript:fetch("http://127.0.0.1:81/gather/" + window.location.href,{mode:"no-
 
 ### 主页面
 
-![主界面](./doc/2.jpg)
+![主界面](https://raw.githubusercontent.com/systemmin/wxdown/master/doc/2.jpg)
 
 ### 文章列表
 
-![文章列表](./doc/1.jpg)
+![文章列表](https://raw.githubusercontent.com/systemmin/wxdown/master/doc/1.jpg)
 
 ### 图片库
 
-![图库](./doc/3.jpg)
+![图库](https://raw.githubusercontent.com/systemmin/wxdown/master/doc/3.jpg)
 
 ## 开发和贡献
 
