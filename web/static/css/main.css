@@ -14,7 +14,7 @@
 
 /* Webkit-based browsers (Chrome, Safari, etc.) */
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 0.3125rem;
     /* Width of the scrollbar */
 
 }
@@ -27,7 +27,7 @@
 /* Handle (the draggable scrolling element) */
 ::-webkit-scrollbar-thumb {
     background: #bbbbbb;
-    border-radius: 5px;
+    border-radius: 0.3125rem;
 }
 
 body {
@@ -36,9 +36,10 @@ body {
     box-sizing: border-box;
     background-color: #f7f7f8;
     font-family: "JetBrains Mono", Inter, "Helvetica Neue", Arial, sans-serif;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 200;
     overflow-x: hidden;
+    height: 100vh;
 }
 
 aside {
@@ -48,10 +49,10 @@ aside {
     top: 0;
     bottom: 0;
     left: 0;
-
     background-color: #202123;
     display: flex;
     flex-direction: row;
+    transition: all 0.5s ease; /* 过渡效果，持续时间和曲线 */
 }
 
 iframe {
@@ -65,25 +66,49 @@ nav {
     height: 100vh;
 
 }
+.badge{
+    position: absolute;
+    left: 0;
+    top: -5px;
+    background-color: #f56c6c;
+    color: #fff;
+    padding: 0px 0.3125rem;
+    font-size: 0.8125rem;
+    border-radius: 6.25rem;
+}
+
+code {
+    font-size: 0.75rem;
+    padding: 0 0.3125rem;
+    line-height: 1.8;
+    margin: 0 0.1875rem;
+    display: inline-block;
+    overflow-x: auto;
+    vertical-align: middle;
+    border-radius: 0.1875rem;
+    background-color: #fbe5e1;
+    color: #c0341d;
+}
 
 nav:first-child {
     width: 16rem;
-    padding: 10px;
+
     color: #fff;
     border-right-color: #4a4b58;
     border-right-style: solid;
-    border-right-width: 1px;
+    border-right-width: 0.0625rem;
 }
 
 ul {
     list-style: none;
     padding-inline-start: 0;
+    margin-block-start: 0;
 }
 
 nav:first-child li {
-    border-radius: 5px;
+    border-radius: 0.3125rem;
     cursor: pointer;
-    margin: 5px 0;
+    margin: 0.3125rem 0;
 }
 
 nav:first-child li:hover {
@@ -101,14 +126,14 @@ nav:first-child li:hover {
 }
 
 nav:last-child {
-    width: 200px;
+    width: 12.5rem;
 }
 
 nav:last-child li {
-    padding: 10px;
+    padding: 0.625rem;
     border-bottom-color: #4a4b58;
     border-bottom-style: solid;
-    border-bottom-width: 1px;
+    border-bottom-width: 0.0625rem;
 }
 
 nav:last-child li p:last-child {
@@ -119,10 +144,10 @@ nav:last-child li p:first-child {
     color: #fff;
 }
 
-a {
+#wx-article a {
     color: #75e704;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 0.875rem;
     word-break: break-all;
 }
 
@@ -138,17 +163,80 @@ a:hover {
 
 
 .task {
+    position: sticky;
+    top: 0;
+    padding: 0.625rem;
+    background-color: #202123;
+    z-index: 9999;
+
+}
+
+.box {
+    display: flex;
+    gap: 0.3125rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.box div:first-child {
+    flex: 1;
     background-color: #050509;
-    border: 1px solid #3e3f42;
-    padding: 10px;
-    border-radius: 5px;
+    border: 0.0625rem solid #434347;
+    color: #fff;
+    border-radius: 0.3125rem;
+    height: 2.1875rem;
+    line-height: 2.1875rem;
+    text-indent: 0.625rem;
     cursor: pointer;
 }
 
+.box div:last-child {
+    flex: 0 0 5.25rem;
+    display: flex;
+    justify-content: end;
+    gap: 0.3125rem
+}
+
+.box div:first-child:hover {
+    border-color: #89898b;
+}
+
+.fun-but {
+    background-color: #202123;
+    border: 0.0625rem solid #565658;
+    cursor: pointer;
+    border-radius: 0.3125rem;
+    height: 2.1875rem;
+    line-height: 2.1875rem;
+    font-size: 1.125rem;
+    color: #0078d7;
+}
+
+#show {
+    position: fixed;
+    left: 0.5625rem;
+    top: 0.5625rem;
+}
+
+.box button:hover {
+    border-color: #89898b;
+}
+
+.task input, .details input {
+    width: 100%;
+    border-radius: 0.3125rem;
+    outline: none;
+    height: 2rem;
+    margin-top: 0.625rem;
+    background-color: #050509;
+    border: 0.0125rem solid #89898b;
+    color: #fff;
+    padding: 0.625rem;
+}
+
 section {
-    padding: 20px;
-    margin-left: 16rem;
-    background-color: #f5f5f5
+    /*padding: 20px;*/
+    /*background-color: #f5f5f5*/
 }
 
 section h2 {
@@ -156,10 +244,10 @@ section h2 {
 }
 
 textarea {
-    padding: 10px;
+    padding: 0.625rem;
     outline: none;
     width: 100%;
-    height: 200px;
+    height: 12.5rem;
     box-sizing: border-box;
     resize: none;
     overflow: auto;
@@ -167,41 +255,102 @@ textarea {
 
 .stats {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
     flex-wrap: wrap;
     justify-content: flex-start;
 }
 
 .stats > div {
-    border: 1px solid;
-    border-radius: 5px;
-    width: 180px;
+    border: 0.0625rem solid;
+    border-radius: 0.3125rem;
+    width: 11.25rem;
     text-align: center;
     font-weight: 900;
     text-shadow: -6px 3px 5px darkgrey;
-    font-size: 26px;
-    padding: 20px;
+    font-size: 1.625rem;
+    padding: 1.25rem;
 }
 
 .stats div div:first-child {
     color: #2c67a7;
-    font-size: 29px
+    font-size: 1.8125rem
 }
 
 .open {
-    font-size: 23px;
+    font-size: 1.4375rem;
     display: flex;
     justify-content: flex-end;
     flex-wrap: wrap;
+}
+
+#wx-menus {
+    margin: 0 0.625rem;
 }
 
 #wx-menus li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2px 10px;
+    padding: 0.125rem 0.625rem;
+    position: relative;
 }
 
 .wx-title {
-    line-height: 25px;
+    line-height: 1.5625rem;
+    min-width: 6.25rem;
+    word-break: break-all;
+}
+
+#wx-menus button {
+    border: none;
+    height: 2.1875rem;
+    width: 2.1875rem;
+    font-size: 1.25rem;
+    background-color: transparent;
+}
+
+#wx-menus button:hover {
+    cursor: pointer;
+    background-color: #8D8FFF;
+}
+
+.hide {
+    display: none;
+}
+
+/*适配移动端*/
+@media screen and (max-width: 768px) {
+    aside {
+        width: 100%;
+    }
+
+    nav:first-child {
+        flex: 1;
+    }
+
+    nav:last-child {
+        flex: 1;
+    }
+
+    #wx-menus li {
+        flex-direction: column;
+        align-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .open {
+        width: 100%;
+    }
+
+    .open button:nth-child(4) {
+        display: none;
+    }
+
+    .open button:nth-child(5) {
+        display: none;
+    }
+
+    main {
+        margin-left: 0;
+    }
 }

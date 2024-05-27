@@ -18,6 +18,24 @@
 
 ## 下载
 
+### v1.0.1(最新版本)
+
+- 增加音频、视频下载
+- 增加首页合集、标签合集下载
+- 优化页面样式、自适应移动端
+- 部分图片解析异常bug优化
+- 替换根目录的 `web` 目录和 `wxdown` 开头可执行文件，重新启动完成更新
+
+| 操作系统               | 版本/架构                                                    | 大小   |
+| ---------------------- | ------------------------------------------------------------ | ------ |
+| Windows                | [wxdown-1.0.1-windows-amd64.exe](https://864000.lanzouj.com/ihbIY1zvivwj) | 9.23MB |
+| ARM Linux              | [wxdown-1.0.1-linux-arm64](https://864000.lanzouj.com/iq50m1zvivjg) |8.75MB|
+| Linux                  | [wxdown-1.0.1-linux-amd64](https://864000.lanzouj.com/iaOY71zviveb) | 9.04MB |
+| macOS                  | [wxdown-1.0.1-darwin-amd64](https://864000.lanzouj.com/ittpb1zviv0h) | 9.09MB |
+| macOS（Apple Silicon） | [wxdown-1.0.1-darwin-arm64](https://864000.lanzouj.com/itnUE1zviv6d) | 8.75MB |
+
+### v1.0.0
+
 | 操作系统               | 版本/架构                                                    | 大小   |
 | ---------------------- | ------------------------------------------------------------ | ------ |
 | Windows                | [wxdown-1.0.0-windows-amd64.exe](https://864000.lanzouj.com/i5JaN1z84hlc) | 9.23MB |
@@ -216,7 +234,7 @@ javascript:fetch("http://127.0.0.1:81/gather/" + window.location.href,{mode:"no-
 
 ### 主页面
 
-![主界面](https://raw.githubusercontent.com/systemmin/wxdown/master/doc/2.jpg)
+![主界面](https://raw.githubusercontent.com/systemmin/wxdown/master/doc/5.jpg)
 
 ### 文章列表
 

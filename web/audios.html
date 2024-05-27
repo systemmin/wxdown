@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>音频</title>
+    <style>
+        body {
+            background-color: #fff;
+        }
+
+        section {
+            max-width: 876px;
+            margin: 0 auto;
+        }
+
+        audio {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<section>
+</section>
+<script>
+    window.addEventListener("message", (e) => {
+        const element = document.querySelector("section");
+        if (!e.data) {
+            element.innerHTML =  '<p style="color: #000;text-align: center">暂无数据!</p>';
+            return;
+        }
+        const data = JSON.parse(e.data);
+        data.forEach(item => {
+            if (item) {
+                const figure = document.createElement("figure");
+                const figcaption = document.createElement("figcaption");
+                let audio = document.createElement("audio");
+                audio.src = item.link;
+                audio.controls = true;
+                audio.preload = "none"
+                figcaption.innerText = item.original;
+                figure.append(figcaption)
+                figure.append(audio)
+                element.append(figure);
+            }
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>音频</title>
+    <style>
+        body {
+            background-color: #FFFFFF;
+        }
+
+        section {
+            max-width: 876px;
+            margin: 0 auto;
+        }
+
+        video {
+            background-color: #000;
+            border-radius: 5px;
+            width: 100%;
+            height: 508px;
+        }
+    </style>
+</head>
+<body>
+<section id="main">
+
+</section>
+<script>
+    window.addEventListener("message", (e) => {
+        const element = document.querySelector("#main");
+        if (!e.data) {
+            element.innerHTML =  '<p style="color: #000;text-align: center">暂无数据!</p>';
+            return;
+        }
+        const data = JSON.parse(e.data);
+        data.forEach(item => {
+            if (item) {
+                const section = document.createElement("section");
+                const video = document.createElement("video");
+                let poster = item.link.replaceAll("/videos/", "/images/")
+                poster = poster.replaceAll("mp4", "jpeg")
+                video.controls = true;
+                video.preload = "none";
+                video.poster = poster;
+                let source = document.createElement("source");
+                source.src = item.link;
+                source.type = "video/mp4";
+                video.append(source)
+                section.append(video)
+                element.append(section);
+            }
+        })
+    })
+</script>
+</body>
+</html>
