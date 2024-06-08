@@ -4,38 +4,74 @@
     <meta charset="UTF-8">
     <title>照片列表</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
         main {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-left: 250px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-auto-rows: minmax(100px, auto);
+            gap: 10px; /* 可选，设置行间距 */
+        }
+        .grid-item {
+            width: 100%;
+            outline: 1px dotted #ccc;
         }
 
-        img {
-            width: 318px;
-            height: 400px;
-            object-fit: contain;
-            outline: 1px dotted #ccc;
+        .grid-item img {
+            width: 100%;
+            height: auto; /* 保持图片的宽高比 */
+        }
+        /*适配移动端*/
+        @media screen and (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
 <main>
-
+    <div class="grid-container">
+    </div>
 </main>
 <script>
-    window.addEventListener("message", (e) => {
-        console.log(e)
-        const element = document.querySelector("main");
-        const {base, data} = JSON.parse(e.data);
-        console.log(data)
-        data.split(',').forEach(item => {
-            let url = "/wx/" + base + "/images/" + item;
+    let listData = [];
+    let parent = "";
+    const main = document.querySelector("main");
+    const dom = document.querySelector(".grid-container");
+    const loading = () => {
+        listData.splice(0, 40).forEach(item => {
             let img = document.createElement("img");
-            img.src = url;
+            let gridItem = document.createElement("div");
+            gridItem.className="grid-item"
+            img.src = item.link;
             img.loading = "lazy";
-            element.append(img);
+            gridItem.append(img);
+            dom.append(gridItem);
         })
+    }
+
+    window.addEventListener("message", (e) => {
+        listData =JSON.parse(e.data)
+        if (listData.length > 0) {
+            loading()
+        }
+    })
+
+    main.addEventListener("scroll", () => {
+        const scrollHeight = main.scrollHeight;
+        const clientHeight = main.clientHeight
+        const scrollTop = main.scrollTop
+        if (scrollHeight - clientHeight <= scrollTop) {
+            console.log("触底加载")
+            loading()
+        }
     })
 </script>
 </body>

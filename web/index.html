@@ -1,52 +1,185 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <title>文章列表</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content=width=device-width, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,
+          user-scalable=no">
+    <title>WXDOWN</title>
+    <link rel="icon" href="/logo.png" type="image/x-icon">
+    <meta name="description" content="文章采集站，支持微信公众号文章采集，支持批量采集，支持批量下载，支持批量转PDF">
     <link rel="stylesheet" href="static/css/main.css">
 </head>
 <body>
+<button class="hide fun-but " id="show">️▶️</button>
 <aside>
     <!-- 公众号-->
     <nav>
-        <div id="task" class="task"><span>📁</span>采集任务</div>
+        <div class="task">
+            <div class="box">
+                <div id="task" style="overflow: hidden;">
+                    <span class="mtask">📁</span>采集任务
+                </div>
+                <div>
+                    <button class="fun-but" title="刷新" onclick="javascript:window.location.reload()">🔄</button>
+                    <button class="sidebar-toggle fun-but" title="收起来" aria-label="收起来">◀️</button>
+                </div>
+            </div>
+            <div>
+                <input id="search" type="search" placeholder="请输入名称或时间">
+            </div>
+        </div>
         <ul id="wx-menus">
+
         </ul>
     </nav>
     <!--  文件列表  -->
     <nav class="details">
+        <div style="padding: 0 10px;position: sticky;top: 0"><input id="search-html" type="search"
+                                                                    placeholder="请输入名称或时间"></div>
         <ul id="wx-article"></ul>
     </nav>
 </aside>
+<main>
+    <section id="section" style="max-width: 1024px;margin: 0 auto;padding: 10px">
+        <h2>批量采集</h2>
+        <label>
+            <textarea name="" placeholder="请输入文章地址，一行一个地址"></textarea>
+        </label>
+        <p>
+            <button id="start">开始采集</button>
+        </p>
+        <h2>合集采集</h2>
+        <p><strong>合集分为两种：</strong><code>appmsgalbum</code>和<code>homepage</code>前缀内容</p>
+        <ol>
+            <li>https://mp.weixin.qq.com/mp/homepage</li>
+            <li>https://mp.weixin.qq.com/mp/appmsgalbum</li>
+        </ol>
+        <label>自定义目录名称：
+            <input type="text" style="width: 100%;outline: none;padding: 10px;" name="folder"
+                   placeholder="请输入自定义目录名称（可选）"/>
+        </label>
+        <label>合计地址：
+            <input type="url" id="collect-url"
+                   placeholder="请输入合集地址。例如：https://mp.weixin.qq.com/mp/appmsgalbum?xxxxx"
+                   style="width: 100%;outline: none;padding: 10px;"/>
+        </label>
+        <p>
+            <button id="collect">开始采集</button>
+        </p>
 
-<section id="section">
-    <h2>文章地址列表</h2>
-    <label>
-        <textarea name="" placeholder="请输入文章地址，一行一个地址"></textarea>
-    </label>
-    <br>
-    <button id="start">开始采集</button>
-    <hr>
-    <div id="stats" class="stats"></div>
-</section>
-<iframe id="iframe" name="child" width="100%" src="images.html" frameborder="0"></iframe>
+        <hr>
+        <h2>🚫不支持批量获取公众号历史</h2>
+        <div id="stats" class="stats">
+            <p>🧊<strong>资源列表</strong></p>
+            <ul>
+                <li>✅图片</li>
+                <li>✅视频</li>
+                <li>✅音频</li>
+                <li>✅HTML</li>
+            </ul>
+            <p>🧊<strong>功能列表</strong></p>
+            <ul>
+                <li>✅HTML 转 PDF</li>
+                <li>✅单个采集接口</li>
+                <li>✅批量采集接口</li>
+                <li>✅支持并发采集</li>
+            </ul>
+            <p>🧊<strong>数据来源</strong></p>
+            <ul>
+                <li>✅<a target="_blank" href="help.html#首页合集">首页合集</a></li>
+                <li>✅<a target="_blank" href="help.html#标签合集">标签合集</a></li>
+                <li>✅单个链接</li>
+            </ul>
+        </div>
+    </section>
+    <iframe id="iframe" name="child" width="100%" src="images.html" frameborder="0"></iframe>
+</main>
 
+<script src="js/api.js"></script>
 <script>
+    const api = new API();
     // 发起一个 articles get 请求获取文章列表
     const details = document.querySelector('.details');
     const iframe = document.getElementById('iframe');
     const section = document.getElementById('section');
-    iframe.style.display = 'none';
-    details.style.display = 'none';
+    const wxArticle = document.getElementById('wx-article');
+    const wxMenus = document.getElementById('wx-menus');
+    iframe.style.display = 'none'; // 隐藏 iframe
+    section.style.display = 'block'; // 采集页面
+    details.style.display = 'none'; // 采集页面
+    // 改变 main 元素的宽度
+    const changeMainWidth = () => {
+        const width = document.documentElement.clientWidth;
+        const clientWidth = document.querySelector("aside").clientWidth;
+        if (width < 768) {
+
+        } else {
+            document.querySelector("main").style.marginLeft = clientWidth + "px";
+        }
+    }
+    // 改变 main 元素的宽度
+    const blockShow = () => {
+        details.style.display = 'block'; // 显示文章列表
+        iframe.style.display = 'block'; // 显示 iframe
+        section.style.display = 'none'; // 隐藏采集页面
+    }
+    // 隐藏或显示元素
+    const showOrHide = () => {
+        document.querySelector('aside').classList.toggle('hide')
+        document.getElementById('show').classList.toggle('hide')
+        changeMainWidth()
+    }
+
+    // 创建 dom
+    function CH() {
+        const args = arguments;
+        const dom = document.createElement(args[0]);
+        if (args.length > 1 && args[1]) {
+            dom.id = args[1];
+        }
+        if (args.length > 2) {
+            dom.innerText = args[2];
+        }
+        if (args.length > 3 && args[3]) {
+            dom.className = args[3];
+        }
+        if (args.length > 4 && args[4]) {
+            dom.dataset[args[4].key] = args[4].value;
+        }
+        return dom
+    }
 
     /**
-     * 事件监听
-     * @param event
+     * 获取文件夹列表
      */
-    const onDetail = (event) => {
-        details.style.display = 'block';
-        iframe.style.display = 'block';
-        section.style.display = 'none';
+    const getFolders = async () => {
+        try {
+            // const folders = await fetch('ats/').then(res => res.json());
+            const folders = await api.get('ats/');
+            if (folders.length) {
+                localStorage.setItem("folders", JSON.stringify(folders))
+                return folders;
+            }
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    const getFoldersDetails = async (folder, fType) => {
+        try {
+            const folders = await api.get(`ats/${folder}/${fType}`);
+            if (folders.length) {
+                localStorage.setItem("foldersDetails", JSON.stringify(folders))
+                return folders;
+            }
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    const onFolderEvent = async (event, fType) => {
+        blockShow()
+        changeMainWidth()
         const target = event.target;
         // 获取当前点击的元素
         const active = document.querySelector('.active');
@@ -54,129 +187,224 @@
         if (active) {
             active.classList.remove('active');
         }
-        // 给当前元素添加 active 类名
-        target.parentElement.classList.add('active');
-        const listData = JSON.parse(target.dataset.files) || [];
-        console.log(listData)
-        const innerText = target.innerText;
-        if (listData.length > 0) {
-            const listStr = listData.map((item) => {
-                let str = `<time style="color:#fff;font-size: 12px">${item.createTime}</time><br><a target="child" href="/wx/${innerText}/html/${item.name}">${item.original}</a><br>`;
-                if (item.isPdf) {
-                    str += `<div style="text-align: end;"><a style="color:#fff;font-size: 13px;font-style: oblique;" target="_blank" href="/wx/${innerText}/pdf/${item.createTime}-${item.original}.pdf">预览PDF</a></div>`
-                }
-                return `<li>${str}</li>`
-            }).join('')
-            const html = `<ul>${listStr}</ul>`
-            document.getElementById('wx-article').innerHTML = html;
+        let listData = [];
+        if (!fType) {
+            listData = await getFoldersDetails(target.dataset.name, "html");
         } else {
-            document.getElementById('wx-article').innerHTML = '暂无数据';
+            listData = await getFoldersDetails(target.parentElement.dataset.name, "pdf");
         }
-    }
-    /**
-     * 获取文章列表
-     * @returns {Promise<void>}
-     */
-    const getArticles = async () => {
-        try {
-            const data = await fetch('articles').then(res => res.json());
-            let stats_html = '';
-            data.forEach(item => {
-                const {name, images, total, files} = item;
-                const element = document.createElement('li');
-                // ================
-                const wxTitle = document.createElement('div');
-                wxTitle.className = "wx-title"
-                wxTitle.innerText = name;
-                wxTitle.dataset.images = images ? images : [];
-                wxTitle.dataset.files = JSON.stringify(files);
-                wxTitle.addEventListener('click', (event, name) => {
-                    console.log('wx-title', name);
-                    onDetail(event)
-                })
-                const open = document.createElement('div');
-                open.className = "open"
-                const openImage = document.createElement('span');
-                openImage.className = "open-image"
-                openImage.innerText = "🖼️"
-                openImage.addEventListener('click', (event) => {
-                    section.style.display = 'none'
-                    details.style.display = 'none';
-                    iframe.src = '/images.html'
-                    iframe.style.display = 'block'
-                    const previousElementSibling = event.target.parentElement.previousElementSibling;
-                    const images1 = previousElementSibling.dataset.images;
-                    console.log('open-image', images1);
-                    setTimeout(() => {
-                        const data = {
-                            base: previousElementSibling.innerText,
-                            data: images1
-                        }
-                        iframe.contentWindow.postMessage(JSON.stringify(data))
-                    }, 100)
-                })
-                const openFolder = document.createElement('span');
-                openFolder.className = "open-folder";
-                openFolder.innerText = "📂";
-                openFolder.addEventListener('click', (event) => {
-                    fetch("/open/"+event.target.parentElement.previousElementSibling.innerText,{mode:"no-cors"})
-                })
-                open.append(openImage)
-                open.append(openFolder)
-
-                element.append(wxTitle)
-                element.append(open)
-
-                document.getElementById('wx-menus').append(element);
-
-                stats_html += `<div><div>${total}</div><div><strong>${name}</strong></div></div>`;
-            })
-            document.getElementById('stats').innerHTML = stats_html;
-        } catch (e) {
-            console.error(e)
+        const length = listData ? listData.length : 0;
+        let rootDom = target.parentElement;
+        if (target.className === "wx-title") {
+        } else if (target.tagName === "BUTTON") {
+            rootDom = target.parentElement.parentElement;
         }
+        if (rootDom.lastElementChild.tagName !== "SPAN") {
+            rootDom.append(CH("span", "", length, "badge"))
+        } else {
+            rootDom.lastElementChild.innerHTML = length
+        }
+        // 给当前元素添加 active 类名
+        rootDom.classList.add('active');
+        if (length) {
+            const listStr = listData.map((item) => {
+                return `<li><time style="color:#fff;font-size: 12px">${item.cteTime}</time><br><a target="child" href="${item.link}">${item.original}</a></li>`
+            }).join('')
+            wxArticle.innerHTML = `<ul>${listStr}</ul>`
+        } else {
+            wxArticle.innerHTML = '<p style="color: #FFF;text-align: center">暂无数据!</p>';
+        }
+        return true
     }
+    const onOpenEvent = async (event) => {
+        const name = event.dataset.name;
+        const folder = event.parentElement.dataset.name;
+        const listData = await getFoldersDetails(folder, name);
+        iframe.style.display = 'block'; // 显示 iframe
+        section.style.display = 'none'; // 隐藏采集页面
+        details.style.display = 'none'; // 隐藏采集页面
+
+        const active = document.querySelector('.active');
+        // 如果当前元素有 active 类名，则移除
+        if (active) {
+            active.classList.remove('active');
+        }
+        const length = listData ? listData.length : 0;
+        let rootDom = event.parentElement.parentElement;
+        if (rootDom.lastElementChild.tagName !== "SPAN") {
+            rootDom.append(CH("span", "", length, "badge"))
+        } else {
+            rootDom.lastElementChild.innerHTML = length
+        }
+        // 给当前元素添加 active 类名
+        rootDom.classList.add('active');
+        changeMainWidth();
+        iframe.src = name + '.html'
+        setTimeout(() => {
+            iframe.contentWindow.postMessage(JSON.stringify(listData))
+
+        }, 100)
+        return true
+    }
+    const rendering = (folders) => {
+        wxArticle.innerHTML = ''
+        wxMenus.innerHTML = "";
+        folders.forEach((item, i) => {
+            let li = CH("li");
+            li.tabIndex = i;
+
+            let folder = CH("div", "folder-" + i, item.name, "wx-title", {key: 'name', value: item.name});
+            folder.className = "wx-title"
+            folder.addEventListener('click', (e) => onFolderEvent(e))
+
+            let open = CH("div", "open-" + i, "", "open", {key: 'name', value: item.name});
+            open.className = "open"
+
+            let audios = CH("button", null, "🔊", "open-event", {key: 'name', value: "audios"});
+            audios.title = "音频"
+            audios.onclick = function () {
+                onOpenEvent(this)
+            }
+            let videos = CH("button", null, "🎬", "open-event", {key: 'name', value: "videos"});
+            videos.title = "视频"
+            videos.onclick = function () {
+                onOpenEvent(this)
+            }
+            let images = CH("button", null, "🖼️", "open-event", {key: 'name', value: "images"});
+            images.title = "图片"
+            images.onclick = function () {
+                onOpenEvent(this)
+            }
+            let folders = CH("button", null, "📂", "open-event", {key: 'name', value: "folder"});
+            folders.title = "打开文件夹"
+            folders.onclick = function () {
+                api.get("open/" + this.parentElement.dataset.name)
+            }
+            let pdf = CH("button", null, "📝", "open-event", {key: 'name', value: "pdfs"});
+            pdf.title = "PDF"
+            pdf.addEventListener('click', (e) => onFolderEvent(e, "pdfs"))
+
+            open.append(audios)
+            open.append(videos)
+            open.append(images)
+            open.append(pdf)
+            open.append(folders)
+
+
+            li.append(folder)
+            li.append(open)
+            wxMenus.append(li);
+        })
+    }
+    const init = async () => {
+        const folders = await getFolders();
+        rendering(folders);
+    }
+
     // 匿名函数
     (() => {
-        getArticles()
+        init()
     })()
 
     // 采集任务
     document.getElementById('task').addEventListener('click', () => {
-        document.getElementById('section').style.display = 'block'
+        section.style.display = 'block'
         iframe.style.display = 'none';
         details.style.display = 'none';
-        document.getElementById('wx-menus').innerHTML = ''
-        getArticles()
+        changeMainWidth()
     })
 
-    // 监听 iframe 切换
+    // 全局监听 click 点击事件
     document.addEventListener("click", function (event) {
+        const width = document.documentElement.clientWidth;
+        if (width < 768) {
+            console.log(event.target)
+            if (event.target.tagName === 'A' || ["videos", "audios", "images"].includes(event.target.dataset.name) || event.target.id === "task") {
+                showOrHide()
+            }
+        }
         if (event.target.id === "start") {
             console.log("采集")
             const value = document.querySelector("textarea").value;
             if (value) {
                 const strings = value.split("\n");
                 if (strings.length === 1) {
-                    fetch("/gather/" + value).then(res => res.json()).then(data => {
+                    api.get("gather/" + value).then(data => {
                         if (data.ok) {
                             alert("采集完成");
                             window.location.reload()
                         }
                     })
                 } else {
-                    fetch("/gather/", {
-                        method: "POST",
-                        body: JSON.stringify(strings)
-                    }).then(res => res.json()).then(data => {
+                    api.post("gather/", strings).then(data => {
                         if (data.ok) {
                             alert("采集完成");
                             window.location.reload()
                         }
                     })
                 }
-
             }
+        } else if (event.target.id === "collect") {
+            const value = document.querySelector("input[type='url']").value;
+            const folder = document.querySelector("input[name='folder']").value;
+            console.log(folder);
+            try {
+                const url = new URL(value);
+                if (url.host !== "mp.weixin.qq.com") {
+                    alert("不支持除了 WX 以外链接！");
+                    return;
+                }
+            } catch (e) {
+                alert("无效URL！");
+                return
+            }
+            if (value) {
+                api.post("collect/", {url: value, folder}).then(data => {
+                    if (data.ok) {
+                        alert("采集完成");
+                        window.location.reload()
+                    } else {
+                        alert(data.message);
+                    }
+                })
+            }
+        }
+    })
+
+    // 侧边栏控制
+    document.querySelector('.sidebar-toggle').addEventListener('click', () => {
+        showOrHide()
+    })
+    // 侧边栏控制
+    document.getElementById('show').addEventListener('click', () => {
+        showOrHide()
+    })
+    // 搜索目录
+    document.getElementById('search').addEventListener('input', (event) => {
+        const listData = JSON.parse(localStorage.getItem("folders"));
+        const results = listData.filter(item => {
+            if (item.name.includes(event.target.value) || item.modTime.includes(event.target.value)) {
+                return item;
+            }
+        })
+        rendering(results)
+    })
+    // 搜索目录
+    document.getElementById('search-html').addEventListener('input', (event) => {
+        const listData = JSON.parse(localStorage.getItem("foldersDetails"));
+        const results = listData.filter(item => {
+            if (item.name.includes(event.target.value) || item.modTime.includes(event.target.value)) {
+                return item;
+            }
+        })
+        wxArticle.innerHTML = ''
+        if (results.length) {
+            const listStr = results.map((item) => {
+                return `<li><time style="color:#fff;font-size: 12px">${item.cteTime}</time><br><a target="child" href="${item.link}">${item.original}</a></li>`
+            }).join('')
+            wxArticle.innerHTML = `<ul>${listStr}</ul>`
+        } else {
+            wxArticle.innerHTML = '<p style="color: #FFF;text-align: center">暂无数据!</p>';
         }
     })
 </script>

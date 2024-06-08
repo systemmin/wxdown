@@ -6,17 +6,27 @@ path: ./data
 
 # HTML 转 PDF 配置
 # 下载 wkhtmltopdf 路径 https://wkhtmltopdf.org/downloads.html
-# window 建议下载后将 wkhtmltopdf目录下载所有内容拷贝到项目根目录下
+# window 建议下载后将 wkhtmltopdf 目录下载所有内容拷贝到项目根目录下，无需填写 path 路径
 wkhtmltopdf:
   # true 开启 false 关闭 默认关闭
-  enable: true
+  enable: false
   # linux 例如：/usr/local/wkhtmltopdf/bin/
   # window 例如：E:\Program Files\wkhtmltopdf\bin
-  path: 
+  path:
 
 # 采集线程配置
 thread:
   # 同时下载 HTML 线程数量
-  html: 5
+  html: 10
   # 同时下载图片线程数量
-  image: 10
+  image: 20
+
+# http 基础认证
+auth:
+  # true 开启 false 关闭 默认关闭
+  enable: false
+  # 用户 账号：密码
+  users:
+    - admin:123456
+    - visitor:123456
+    - test:123456

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content=width=device-width, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,
+          user-scalable=no">
+    <title>登录页面</title>
+    <link rel="icon" href="/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <div class="login-box">
+        <h2>WXDOWN</h2>
+        <form id="loginForm">
+            <div class="user-box">
+                <input type="text" name="username" required>
+                <label>账号</label>
+            </div>
+            <div class="user-box">
+                <input type="password" name="password" required>
+                <label>密码</label>
+            </div>
+            <a href="javascript:;">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                登录
+            </a>
+        </form>
+    </div>
+</div>
+<script>
+
+    // 编码
+    function encodeBase64Unicode(str) {
+        return btoa(unescape(encodeURIComponent(str)));
+    }
+
+    // 解码
+    function decodeBase64Unicode(str) {
+        return decodeURIComponent(escape(atob(str)));
+    }
+
+    document.querySelector('a').addEventListener('click', function (event) {
+        const form = document.querySelector("form");
+        // 使用FormData对象获取表单数据
+        const formData = new FormData(form);
+
+        // 将表单数据转换为对象
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+        const username = formData.get("username");
+        const password = formData.get("password");
+        const base64 = encodeBase64Unicode(username + ":" + password);
+        sessionStorage.setItem("Authorization", "Basic " + base64)
+        setTimeout(() => {
+            window.location.href = "/"
+        }, 500)
+    });
+
+
+</script>
+</body>
+</html>
