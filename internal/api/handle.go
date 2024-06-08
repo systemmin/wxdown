@@ -116,7 +116,7 @@ func HandlerGather(w http.ResponseWriter, r *http.Request, defaultDataPath strin
 		log.Printf("当前下标：[%d]\n", i+1)
 		log.Printf("当前资源：[%s]\n", item)
 		wg.Add(1)
-		biz.DownloadHtml(item, defaultDataPath, "", sem, &wg, filePaths, cfg.Thread.Image)
+		go biz.DownloadHtml(item, defaultDataPath, "", sem, &wg, filePaths, cfg.Thread.Image)
 	}
 	// 等待所有下载完成
 	go func() {
@@ -290,7 +290,7 @@ func HandlerCollect(w http.ResponseWriter, r *http.Request, defaultDataPath stri
 			log.Printf("当前下标：[%d]\n", i+1)
 			log.Printf("当前资源：[%s]\n", item)
 			wg.Add(1)
-			biz.DownloadHtml(item, defaultDataPath, utils.Iif(len(folder) > 0, folder, album.Name), sem, &wg, filePaths, cfg.Thread.Image)
+			go biz.DownloadHtml(item, defaultDataPath, utils.Iif(len(folder) > 0, folder, album.Name), sem, &wg, filePaths, cfg.Thread.Image)
 		}
 		// 等待所有下载完成
 		go func() {
