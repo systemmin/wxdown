@@ -224,10 +224,10 @@ func DownloadHtml(urlStr string, path string, newName string, sem chan struct{},
 				voiceName = audio.Name
 			}
 			// 发布时间->音频名称-->音频序号->音频后缀
-			audioName := fmt.Sprintf("%s_%s_%d.%s", createTime, audio.Name, i, "mp3")
+			audioName := fmt.Sprintf("%s_%s_%d.%s", createTime, voiceName, i, "mp3")
 			audioPath := filepath.Join(path, baseInfo["js_name"], "audios", audioName)
 			wgFile.Add(1)
-			utils.DownloadFile(constant.AudioPrefix+voiceEncodeFileID, audioPath, nil, semFile, &wgFile)
+			go utils.DownloadFile(constant.AudioPrefix+voiceEncodeFileID, audioPath, nil, semFile, &wgFile)
 			// 清空节点内容进行覆盖
 			node.Node.SetHtml(utils.CreateAudioHTML(voiceName, audioName))
 			break
@@ -244,7 +244,7 @@ func DownloadHtml(urlStr string, path string, newName string, sem chan struct{},
 				videoName := fmt.Sprintf("%s_%d_%s", createTime, index, name)
 				videoPath := filepath.Join(path, baseInfo["js_name"], "videos", videoName)
 				wgFile.Add(1)
-				utils.DownloadFile(vUrl, videoPath, headers, semFile, &wgFile)
+				go utils.DownloadFile(vUrl, videoPath, headers, semFile, &wgFile)
 				// 清空节点内容进行覆盖
 				node.Node.SetHtml(utils.CreateVideoHTML(videoName))
 				// 下载封面
@@ -252,7 +252,7 @@ func DownloadHtml(urlStr string, path string, newName string, sem chan struct{},
 				all := strings.ReplaceAll(videoName, "mp4", "jpeg")
 				imgPath := filepath.Join(path, baseInfo["js_name"], "images", all)
 				wgFile.Add(1)
-				utils.DownloadFile(cUrl, imgPath, nil, semFile, &wgFile)
+				go utils.DownloadFile(cUrl, imgPath, nil, semFile, &wgFile)
 			}
 			break
 		default:
@@ -273,7 +273,7 @@ func DownloadHtml(urlStr string, path string, newName string, sem chan struct{},
 			if len(sets[string(md5Sum)]) == 0 {
 				// 添加线程计数
 				wgFile.Add(1)
-				utils.DownloadFile(original, imageJoin, nil, semFile, &wgFile)
+				go utils.DownloadFile(original, imageJoin, nil, semFile, &wgFile)
 				sets[string(md5Sum)] = fileName
 			} else {
 				// 重新赋值已下载内容
