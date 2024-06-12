@@ -127,11 +127,31 @@ func handleAudio(child *goquery.Selection, nodes *[]NodeContent) {
 		html, err := child.Html()
 		if err == nil {
 			htmlTrim := strings.Trim(strings.ReplaceAll(html, "\n", ""), " ")
-			if strings.HasPrefix(htmlTrim, "<mp-common-mpaudio") && strings.HasSuffix(htmlTrim, "</mp-common-mpaudio>") {
-				*nodes = append(*nodes, NodeContent{Node: child, Original: html, Target: "", Type: 3})
+			audio := "mp-common-mpaudio"
+			voice := "mpvoice"
+			if strings.Contains(htmlTrim, audio) {
+				// 处理特殊情况 section 包含其他字符
+				fIndex := strings.Index(htmlTrim, audio)
+				if fIndex != -1 {
+					htmlTrim = htmlTrim[fIndex-1:]
+				}
+				lIndex := strings.LastIndex(htmlTrim, audio)
+				if lIndex != -1 {
+					htmlTrim = htmlTrim[:lIndex+len(audio)+1]
+				}
+				*nodes = append(*nodes, NodeContent{Node: child, Original: htmlTrim, Target: "a", Type: 3})
 			}
-			if strings.HasPrefix(htmlTrim, "<mpvoice") && strings.HasSuffix(htmlTrim, "</mpvoice>") {
-				*nodes = append(*nodes, NodeContent{Node: child, Original: html, Target: "", Type: 3})
+			if strings.Contains(htmlTrim, voice) {
+				// 处理特殊情况 section 包含其他字符
+				fIndex := strings.Index(htmlTrim, voice)
+				if fIndex != -1 {
+					htmlTrim = htmlTrim[fIndex-1:]
+				}
+				lIndex := strings.LastIndex(htmlTrim, voice)
+				if lIndex != -1 {
+					htmlTrim = htmlTrim[:lIndex+len(voice)+1]
+				}
+				*nodes = append(*nodes, NodeContent{Node: child, Original: htmlTrim, Target: "v", Type: 3})
 			}
 		}
 	}
@@ -242,9 +262,12 @@ func IsValueArray(array []string, key string) (string, int) {
 
 // video 对应 iframe；Audio 对应 mp-common-mpaudio
 
-func CreateAudioHTML(title string, src string) string {
+func CreateAudioHTML(title, src, text string) string {
 	template := fmt.Sprintf("<figure><figcaption class=\"audio_card_title\">%s</figcaption>", title)
 	template += fmt.Sprintf("<audio style=\"width: 100%s\" controls src=\"../audios/%s\"></audio></figure>", "%;", src)
+	if len(text) > 0 {
+		return fmt.Sprintf("<p>%s</p>%s", text, template)
+	}
 	return template
 }
 

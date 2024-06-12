@@ -59,7 +59,7 @@ func (hc *HttpClient) Request(method, url string, headers map[string]string, bod
 		req.Header.Set(key, value[0])
 		log.Printf("%s:%s", key, value)
 	}
-	log.Println("取响状态：", resp.StatusCode)
+	log.Println("响应状态：", resp.StatusCode)
 
 	// 读取响应体
 	respBody, err := io.ReadAll(resp.Body)
@@ -73,27 +73,4 @@ func (hc *HttpClient) Request(method, url string, headers map[string]string, bod
 	}
 
 	return respBody, nil
-}
-
-func main() {
-	// 创建一个 HttpClient 实例，设置超时时间为10秒
-	client := NewHttpClient(10 * time.Second)
-
-	// 设置请求参数
-	url := "https://jsonplaceholder.typicode.com/posts"
-	method := "POST"
-	headers := map[string]string{
-		"Content-Type": "application/json",
-	}
-	body := []byte(`{"title":"foo","body":"bar","userId":1}`)
-
-	// 发送请求
-	response, err := client.Request(method, url, headers, body)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	// 打印响应结果
-	fmt.Println("Response:", string(response))
 }

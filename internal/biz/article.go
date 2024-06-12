@@ -208,18 +208,19 @@ func DownloadHtml(urlStr string, path string, newName string, sem chan struct{},
 	for i, node := range nodes {
 		original := node.Original
 		types := node.Type
+		target := node.Target
 		// 0 1 2 图片 , 3 音频 4 视频
 		switch types {
 		case 3:
 			var voiceEncodeFileID string
 			var voiceName string
-			audio, err := common.AudioParse(original)
-			if err != nil {
-				fmt.Println(err)
-				voice, _ := common.VoiceParse(original)
-				voiceEncodeFileID = voice.VoiceEncodeFileID
-				voiceName = voice.Name
-			} else {
+			if target == "a" {
+				audio, _ := common.AudioParse(original)
+				voiceEncodeFileID = audio.VoiceEncodeFileID
+				voiceName = audio.Name
+			}
+			if target == "v" {
+				audio, _ := common.VoiceParse(original)
 				voiceEncodeFileID = audio.VoiceEncodeFileID
 				voiceName = audio.Name
 			}
@@ -229,7 +230,8 @@ func DownloadHtml(urlStr string, path string, newName string, sem chan struct{},
 			wgFile.Add(1)
 			go utils.DownloadFile(constant.AudioPrefix+voiceEncodeFileID, audioPath, nil, semFile, &wgFile)
 			// 清空节点内容进行覆盖
-			node.Node.SetHtml(utils.CreateAudioHTML(voiceName, audioName))
+			text := node.Node.Text()
+			node.Node.SetHtml(utils.CreateAudioHTML(voiceName, audioName, text))
 			break
 		case 4:
 			vUrl, index := utils.IsValueArray(videoUrls, original)
