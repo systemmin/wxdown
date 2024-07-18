@@ -2,12 +2,11 @@ package utils
 
 import (
 	"bytes"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"go-wx-download/internal/constant"
 	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
@@ -15,7 +14,6 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
-	"time"
 )
 
 // SanitizeFilename 处理名称特殊字符
@@ -29,43 +27,22 @@ func SanitizeFilename(filename string) string {
 	return sanitizedFilename
 }
 
-// GetBaseInfo 获取基础信息
-func GetBaseInfo(str string) map[string]string {
-	// 匹配规则
-	keys := constant.Fields
-	info := make(map[string]string)
+func RemoveDuplicates(arr []string) []string {
+	// 创建一个 map 来记录已经出现过的元素
+	seen := make(map[string]struct{})
+	// 创建一个切片来存储去重后的结果
+	var result []string
 
-	for _, item := range keys {
-		// 构建正则表达式
-		regex := regexp.MustCompile(item + `\s*[:=]\s*["']([^"']+)["']`)
-		match := regex.FindStringSubmatch(str)
-		if len(match) > 1 {
-			jsonStr := match[1]
-			if item == "biz" {
-				// 对biz字段进行base64解码
-				buffer, err := base64.StdEncoding.DecodeString(jsonStr)
-				if err != nil {
-					info[item] = ""
-					fmt.Println("Base64 decode error:", err)
-				} else {
-					info[item+"_base64"] = string(buffer)
-					info[item] = jsonStr
-				}
-			} else {
-				info[item] = jsonStr
-			}
-		} else {
-			fmt.Println("没有找到匹配的内容")
+	// 遍历原始数组
+	for _, value := range arr {
+		// 如果元素没有出现在 map 中，则添加到结果中
+		if _, found := seen[value]; !found {
+			seen[value] = struct{}{} // 标记元素已经出现过
+			result = append(result, value)
 		}
 	}
-	if value, exists := info["createTime"]; exists {
-		if len(value) <= 0 {
-			info["createTime"] = time.DateTime
-		}
-	} else {
-		info["createTime"] = time.DateTime
-	}
-	return info
+
+	return result
 }
 
 // UrlFilter 过滤采集地址
@@ -235,40 +212,31 @@ func IsNotExistCreate(dirPath string) {
 	}
 }
 
-func Upgradation(path string, v string) {
-	fmt.Printf("版本：%s 升级,自动检测缺失文件夹,可忽略\n", v)
-	dir, err := os.ReadDir(path)
-	if err != nil {
-		log.Printf("%s 路径不存在\n", path)
-	}
-	for _, file := range dir {
-		if file.IsDir() {
-			name := file.Name()
-			if name == ".DS_Store" || name == "css" || name == "task" {
-				continue
-			}
-			IsNotExistCreate(filepath.Join(path, name, "audios"))
-			IsNotExistCreate(filepath.Join(path, name, "videos"))
-		}
-	}
-}
-
 // ToPDF html 转 PDF
 // cmd.exe /c cd C:\\your\\directory && your-command
 // cmd.exe /k
 // "sh", "-c", "cd /path/to/directory && your-command"
 func ToPDF(path string, url string, wk string) {
-
-	// 待执行命令
-	env := Iif(runtime.GOOS == "windows", "cmd", "sh")
-	quit := Iif(runtime.GOOS == "windows", "/c", "-c")
 	suffix := Iif(len(wk) > 0, fmt.Sprintf("cd %s && wkhtmltopdf", wk), "wkhtmltopdf")
-
 	cmd := fmt.Sprintf("%s %s %s", suffix, url, path)
-	fmt.Println("env：", env)
-	fmt.Println("quit：", quit)
-	fmt.Println("html to pdf cmd：", cmd)
-	// E:\Program Files\wkhtmltopdf\bin
+	ExecuteCmd(cmd)
+}
+
+func ExecuteCmd(cmd string) {
+	// 环境 退出 命令
+	var env, quit string
+	switch runtime.GOOS {
+	case "windows":
+		env = "cmd"
+		quit = "/c"
+	case "darwin":
+		env = "cmd"
+		quit = "-c"
+	default:
+		env = "cmd"
+		quit = "sh"
+	}
+	fmt.Println("执行命令 :", env, quit, cmd)
 	command := exec.Command(env, quit, cmd)
 	// 创建一个缓冲区，用于存储命令的标准输出
 	var out bytes.Buffer
@@ -276,76 +244,33 @@ func ToPDF(path string, url string, wk string) {
 	// 执行命令
 	err := command.Run()
 	if err != nil {
+		log.Println(err)
 		return
 	}
 	// 输出命令执行结果
 	fmt.Println("命令执行结果：", out.String())
 }
 
-func CmdOpenFolder(cmd string) {
-	fmt.Println("open folder cmd：", cmd)
-	var command *exec.Cmd
-	if runtime.GOOS == "windows" {
-		command = exec.Command("cmd", "/c", cmd)
-	} else {
-		command = exec.Command("sh", "-c", cmd)
+func OpenBrowser(url string) {
+	var err error
+	fmt.Errorf("cccc")
+
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
 	}
-	// 创建一个缓冲区，用于存储命令的标准输出
-	var out bytes.Buffer
-	command.Stdout = &out
-	// 执行命令
-	err := command.Run()
+
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Printf("Error opening browser: %v\n", err)
 	}
-	// 输出命令执行结果
-	fmt.Println("命令执行结果：", out.String())
 }
 
-type Result struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    string `json:"data"`
-	Ok      bool   `json:"ok"`
-}
-
-// Ok 返回状态码
-func Ok(msg string) []byte {
-	result := Result{
-		Code:    200,
-		Message: Iif(len(msg) > 0, msg, "成功"),
-		Data:    "",
-		Ok:      true,
-	}
-	jsonData, _ := json.Marshal(result)
-	return jsonData
-}
-
-func Success(msg string) []byte {
-	result := Result{
-		Code:    200,
-		Message: Iif(len(msg) > 0, msg, "成功"),
-		Data:    "",
-		Ok:      true,
-	}
-	jsonData, _ := json.Marshal(result)
-	return jsonData
-}
-
-// Fail 返回状态码
-func Fail(msg string) []byte {
-	result := Result{
-		Code:    500,
-		Message: Iif(len(msg) > 0, msg, "失败"),
-		Data:    "",
-		Ok:      false,
-	}
-	jsonData, _ := json.Marshal(result)
-	return jsonData
-}
-
-// ParseUrl 解析 URL 参数 返回 Params 对象
 func ParseUrl(urlStr string) (Params, error) {
 	params := make(Params)
 	result, err := url.Parse(urlStr)
@@ -356,4 +281,12 @@ func ParseUrl(urlStr string) (Params, error) {
 		params.Set(key, values[0])
 	}
 	return params, nil
+}
+
+func IsURL(url string) error {
+	client := http.Client{}
+	if _, err := client.Get(url); err != nil {
+		return err
+	}
+	return nil
 }

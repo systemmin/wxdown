@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"go-wx-download/config"
-	"go-wx-download/internal/api"
+	"go-wx-download/internal/controller"
 	"go-wx-download/pkg/utils"
 	"log"
 	"net/http"
@@ -16,7 +16,7 @@ import (
 var runMode = "source"
 
 // version 版本号
-var version = "1.0.2"
+var version = "1.0.3"
 
 // LoggingMiddleware 记录每个请求的日志
 func LoggingMiddleware(next http.Handler) http.Handler {
@@ -144,24 +144,25 @@ func main() {
 	// 使用 wx 前缀
 	mux.Handle("/wx/", http.StripPrefix("/wx/", wxFs))
 
+	// 文件操作
 	mux.HandleFunc("/ats/", func(w http.ResponseWriter, r *http.Request) {
-		api.HandlerFolder(defaultDataPath, w, r)
+		controller.Folder(w, r, defaultDataPath)
 	})
-
 	mux.HandleFunc("/ats/{folder}/{type}", func(w http.ResponseWriter, r *http.Request) {
-		api.HandlerFolder(defaultDataPath, w, r)
-	})
-	// 数据采集
-	mux.HandleFunc("/gather/", func(writer http.ResponseWriter, request *http.Request) {
-		api.HandlerGather(writer, request, defaultDataPath, defaultPort, cfg)
-	})
-	// 合集采集
-	mux.HandleFunc("/collect/", func(writer http.ResponseWriter, request *http.Request) {
-		api.HandlerCollect(writer, request, defaultDataPath, defaultPort, cfg)
+		controller.Folder(w, r, defaultDataPath)
 	})
 	// 打开文件夹
 	mux.HandleFunc("/open/", func(writer http.ResponseWriter, request *http.Request) {
-		api.HandlerOpen(writer, request, defaultDataPath)
+		controller.Open(writer, request, defaultDataPath)
+	})
+
+	// 单个采集
+	mux.HandleFunc("/gather/", func(writer http.ResponseWriter, request *http.Request) {
+		controller.Gather(writer, request, cfg, defaultDataPath)
+	})
+	// 合计采集
+	mux.HandleFunc("/collect/", func(writer http.ResponseWriter, request *http.Request) {
+		controller.Collect(writer, request, cfg, defaultDataPath)
 	})
 
 	// wx 无实际意义加快响应
@@ -184,10 +185,13 @@ func main() {
 		}
 	})
 
+	utils.InitPrint(defaultPort, version, runMode, exPath, defaultDataPath)
+	if cfg.Browser {
+		utils.OpenBrowser("http://127.0.0.1:" + defaultPort)
+	}
 	// 指定监听的地址和端口
 	addr := ":" + defaultPort
 
-	utils.InitPrint(defaultPort, version, runMode, exPath, defaultDataPath)
 	// 启动服务器
 	if err := http.ListenAndServe(addr, handler); err != nil {
 		fmt.Printf("无法启动服务器: %s\n", err)

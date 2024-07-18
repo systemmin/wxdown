@@ -12,6 +12,7 @@ import (
 type Config struct {
 	Port        string `yaml:"port"`
 	Path        string `yaml:"path"`
+	Browser     bool   `yaml:"browser"`
 	Wkhtmltopdf struct {
 		Enable bool   `yaml:"enable"`
 		Path   string `yaml:"path"`

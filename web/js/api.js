@@ -37,9 +37,14 @@ class API {
             }
             if (!response.ok) {
                 const errorData = await response.json();
+                console.log(errorData)
                 throw new Error(errorData.message || 'Something went wrong');
             }
-            return await response.json();
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.msg || 'Something went wrong');
+            }
+            return data
         } catch (error) {
             console.error('API request error:', error);
             throw error;

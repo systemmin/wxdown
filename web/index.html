@@ -34,41 +34,34 @@
     </nav>
     <!--  文件列表  -->
     <nav class="details">
-        <div style="padding: 0 10px;position: sticky;top: 0"><input id="search-html" type="search"
-                                                                    placeholder="请输入名称或时间"></div>
+        <div style="padding: 0 10px;position: sticky;top: 0">
+            <input id="search-html" type="search" placeholder="请输入名称或时间"></div>
         <ul id="wx-article"></ul>
     </nav>
 </aside>
 <main>
     <section id="section" style="max-width: 1024px;margin: 0 auto;padding: 10px">
-        <h2>批量采集</h2>
-        <label>
-            <textarea name="" placeholder="请输入文章地址，一行一个地址"></textarea>
-        </label>
-        <p>
-            <button id="start">开始采集</button>
-        </p>
-        <h2>合集采集</h2>
-        <p><strong>合集分为两种：</strong><code>appmsgalbum</code>和<code>homepage</code>前缀内容</p>
-        <ol>
-            <li>https://mp.weixin.qq.com/mp/homepage</li>
-            <li>https://mp.weixin.qq.com/mp/appmsgalbum</li>
-        </ol>
-        <label>自定义目录名称：
-            <input type="text" style="width: 100%;outline: none;padding: 10px;" name="folder"
-                   placeholder="请输入自定义目录名称（可选）"/>
-        </label>
-        <label>合计地址：
-            <input type="url" id="collect-url"
-                   placeholder="请输入合集地址。例如：https://mp.weixin.qq.com/mp/appmsgalbum?xxxxx"
-                   style="width: 100%;outline: none;padding: 10px;"/>
-        </label>
-        <p>
-            <button id="collect">开始采集</button>
-        </p>
+        <div style="text-align: center;user-select: none">
+            <div class="cus-logo" style="">
+                WXD<span>WXD</span>
+            </div>
+            <p>公众号文章采集</p>
+        </div>
+
+        <form>
+            <label for="folder">目录名称（可选）</label>
+            <input type="text" id="folder" name="folder" list="foodList" placeholder="输入自定义目录名称">
+            <datalist id="foodList">
+            </datalist>
+            <label for="collectAddress">采集地址（必填）</label>
+            <textarea id="collectAddress" name="urls" placeholder=""></textarea>
+            <div style="display: flex;gap: 20px;">
+                <button type="submit">采集</button>
+                <button type="reset">重置</button>
+            </div>
+        </form>
 
         <hr>
-        <h2>🚫不支持批量获取公众号历史</h2>
         <div id="stats" class="stats">
             <p>🧊<strong>资源列表</strong></p>
             <ul>
@@ -91,12 +84,53 @@
                 <li>✅单个链接</li>
             </ul>
         </div>
+        <p> <a href="https://github.com/systemmin/wxdown/issues" target="_blank">Bug 反馈</a></p>
+
     </section>
     <iframe id="iframe" name="child" width="100%" src="images.html" frameborder="0"></iframe>
 </main>
 
+<script src="https://hm.baidu.com/hm.js?69bc11719d31206cbc65c13979ea5c69"></script>
 <script src="js/api.js"></script>
 <script>
+    let tips = "1.输入一个或多个链接，每个链接单独一行。例如：\n";
+    tips += "2.单个链接。例如：https://mp.weixin.qq.com/s/xxxxxx\n";
+    tips += "3.首页合集链接前缀。例如：https://mp.weixin.qq.com/mp/homepage\n";
+    tips += "4.标签合集链接前缀。例如：https://mp.weixin.qq.com/mp/appmsgalbum\n";
+    tips += "5.合集链接支持一个，不支持多个链接。\n";
+    document.getElementById('collectAddress').placeholder = tips;
+
+    const showToast = (message, duration) => {
+        const styles = {
+            "position": "fixed",
+            "top": "20px",
+            "left": "50%",
+            "transform": "translateX(-50%)",
+            "z-index": 9999,
+            "background-color": "#333",
+            "color": "#fff",
+            "padding": "10px 20px",
+            "border-radius": "5px",
+            "text-align": "center",
+            "transition": "opacity 0.3s"
+        };
+        // 创建轻提示元素
+        var toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        for (let key of Object.keys(styles)) {
+            toast.style[key] = styles[key];
+        }
+        // 将轻提示添加到页面中
+        document.body.append(toast);
+        // 隐藏轻提示
+        setTimeout(function () {
+            setTimeout(function () {
+                document.body.removeChild(toast);
+            }, 300);
+        }, duration || 1000);
+    }
+
     const api = new API();
     // 发起一个 articles get 请求获取文章列表
     const details = document.querySelector('.details');
@@ -155,7 +189,7 @@
     const getFolders = async () => {
         try {
             // const folders = await fetch('ats/').then(res => res.json());
-            const folders = await api.get('ats/');
+            const {data: folders} = await api.get('ats/');
             if (folders.length) {
                 localStorage.setItem("folders", JSON.stringify(folders))
                 return folders;
@@ -167,7 +201,7 @@
 
     const getFoldersDetails = async (folder, fType) => {
         try {
-            const folders = await api.get(`ats/${folder}/${fType}`);
+            const {data: folders} = await api.get(`ats/${folder}/${fType}`);
             if (folders.length) {
                 localStorage.setItem("foldersDetails", JSON.stringify(folders))
                 return folders;
@@ -298,6 +332,11 @@
     }
     const init = async () => {
         const folders = await getFolders();
+        let opts = '';
+        folders.forEach(item => {
+            opts += `<option value="${item.name}"></option>`;
+        })
+        document.getElementById('foodList').innerHTML = opts;
         rendering(folders);
     }
 
@@ -321,52 +360,6 @@
             console.log(event.target)
             if (event.target.tagName === 'A' || ["videos", "audios", "images"].includes(event.target.dataset.name) || event.target.id === "task") {
                 showOrHide()
-            }
-        }
-        if (event.target.id === "start") {
-            console.log("采集")
-            const value = document.querySelector("textarea").value;
-            if (value) {
-                const strings = value.split("\n");
-                if (strings.length === 1) {
-                    api.get("gather/" + value).then(data => {
-                        if (data.ok) {
-                            alert("采集完成");
-                            window.location.reload()
-                        }
-                    })
-                } else {
-                    api.post("gather/", strings).then(data => {
-                        if (data.ok) {
-                            alert("采集完成");
-                            window.location.reload()
-                        }
-                    })
-                }
-            }
-        } else if (event.target.id === "collect") {
-            const value = document.querySelector("input[type='url']").value;
-            const folder = document.querySelector("input[name='folder']").value;
-            console.log(folder);
-            try {
-                const url = new URL(value);
-                if (url.host !== "mp.weixin.qq.com") {
-                    alert("不支持除了 WX 以外链接！");
-                    return;
-                }
-            } catch (e) {
-                alert("无效URL！");
-                return
-            }
-            if (value) {
-                api.post("collect/", {url: value, folder}).then(data => {
-                    if (data.ok) {
-                        alert("采集完成");
-                        window.location.reload()
-                    } else {
-                        alert(data.message);
-                    }
-                })
             }
         }
     })
@@ -407,7 +400,76 @@
             wxArticle.innerHTML = '<p style="color: #FFF;text-align: center">暂无数据!</p>';
         }
     })
+
+    // 表单提交
+    document.querySelector('button[type ="submit"]').addEventListener('click', function (event) {
+        event.preventDefault()
+        console.log(event)
+        // 使用FormData对象获取表单数据
+        const formData = new FormData(event.target.form);
+
+        // 将表单数据转换为对象
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+        console.log(formObject)
+        if (!formObject.urls) {
+            showToast("请输入采集地址")
+            return;
+        }
+        const urls = formObject.urls;
+        const listUrl = [];
+        // urls 拆分 判断多个 url 是否属于微信
+        if (urls.split("\n").length > 0) {
+            const urlsArr = urls.split("\n");
+            urlsArr.forEach(item => {
+                if (item) {
+                    try {
+                        const url = new URL(item);
+                        if (url.host !== "mp.weixin.qq.com") {
+                            showToast("不支持除了 WX 以外链接！");
+                            return;
+                        } else {
+                            listUrl.push(item)
+                        }
+                    } catch (e) {
+                        showToast("无效URL！");
+                        return
+                    }
+                }
+            })
+        }
+        formObject.urls = listUrl;
+        console.log(urls);
+        if (listUrl.length === 1 && (listUrl[0].includes("appmsgalbum") || listUrl[0].includes("homepage"))) {
+            api.post("collect/", formObject).then(data => {
+                if (data.success) {
+                    showToast("采集完成");
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1000)
+                } else {
+                    showToast(data.msg);
+                }
+            })
+        } else {
+            api.post("gather/", formObject).then(data => {
+                console.log(data)
+                if (data.success) {
+                    showToast("采集完成");
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1000)
+                } else {
+                    showToast(data.msg);
+                }
+            })
+        }
+
+    });
 </script>
+
 
 </body>
 </html>

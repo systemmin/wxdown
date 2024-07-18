@@ -24,7 +24,27 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 
 使用文档移步 [wiki](https://github.com/systemmin/wxdown/wiki)
 
-### v1.0.2(当前版本)
+### v1.0.3(当前版本)
+
+替换根目录 `web`、`wxdown`、`config.yaml` 文件重新启动完成更新
+
+- 增加自定义目录名称
+- 增加启动时默认在浏览器打开管理端
+- 优化公众号最近更新样式问题
+- 优化html、图片异步下载（可能会出现页面下载完了，图片还没有过会就好）
+- 优化管理页面
+- 重构代码
+
+| 操作系统               | 文件名                         | 链接                                    | 文件大小 |
+| ---------------------- | ------------------------------ | --------------------------------------- | -------- |
+| Windows                | wxdown-1.0.3-windows-amd64.zip | https://864000.lanzouj.com/iR2ZM24ur81i | 18.1 M   |
+| ARM Linux              | wxdown-1.0.3-linux-arm64.zip   | https://864000.lanzouj.com/iq5LZ24ur59i | 6.0 M    |
+| Linux                  | wxdown-1.0.3-linux-amd64.zip   | https://864000.lanzouj.com/iDzcY24ur4be | 6.3 M    |
+| macOS                  | wxdown-1.0.3-darwin-arm64.zip  | https://864000.lanzouj.com/i34G224ur3cj | 6.0 M    |
+| macOS（Apple Silicon） | wxdown-1.0.3-darwin-amd64.zip  | https://864000.lanzouj.com/iwuPf24ur2ef | 6.3 M    |
+
+
+### v1.0.2
 
 替换根目录 `web`、`wxdown`、`config.yaml` 文件重新启动完成更新
 

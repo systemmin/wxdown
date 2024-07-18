@@ -16,7 +16,7 @@ func InitPrint(port string, version string, runMode string, runPath string, reso
 	gang := "----------------------------------------"
 
 	fmt.Println(gang)
-	fmt.Println("\t\t欢迎使用 wxdown 工具！")
+	fmt.Println("\t\t\t欢迎使用 wxdown 工具！")
 	fmt.Println(gang)
 
 	fmt.Printf("运行模式 : %s\n", runMode)
@@ -27,7 +27,7 @@ func InitPrint(port string, version string, runMode string, runPath string, reso
 	fmt.Println("检测更新 : https://github.com/systemmin/wxdown")
 
 	fmt.Println(gang)
-	fmt.Println("\t\t服务信息")
+	fmt.Println("\t\t\t服务信息")
 	fmt.Println(gang)
 	fmt.Println("服务地址：")
 
@@ -40,7 +40,7 @@ func InitPrint(port string, version string, runMode string, runPath string, reso
 	}
 
 	fmt.Println(gang)
-	fmt.Println("\t\t配置信息")
+	fmt.Println("\t\t\t配置信息")
 	fmt.Println(gang)
 	fmt.Println("运行路径 : " + runPath)
 	fmt.Println("资源路径 : " + resourcePath)
