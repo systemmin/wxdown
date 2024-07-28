@@ -220,6 +220,10 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 				// 重新赋值已下载内容
 				resetSrc = "../images/" + sets[string(md5Sum)]
 			}
+			before, b := strings.CutSuffix(resetSrc, "webp") // 转 PDF 有问题图片格式处理
+			if b {
+				resetSrc = fmt.Sprintf("%sjpeg", before)
+			}
 			// 重置属性值
 			if node.Type == 0 {
 				node.Node.SetAttr("src", resetSrc)

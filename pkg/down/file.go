@@ -3,10 +3,13 @@ package down
 import (
 	"bytes"
 	"fmt"
+	"github.com/disintegration/imaging"
 	"go-wx-download/pkg/utils"
+	"golang.org/x/image/webp"
 	"io"
 	"log"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -41,5 +44,42 @@ func DownloadFile(url string, filepath string, headers map[string]string, sem ch
 		fmt.Printf("无法写入文件：%s\n", err)
 		return
 	}
+	webPToJPEG(filepath)
 	log.Println(filepath)
+}
+
+// webpToJPG webp 转 jpeg 格式
+func webPToJPEG(filepath string) {
+	before, b := strings.CutSuffix(filepath, "webp")
+	if b {
+		// 打开WebP文件
+		webpFile, err := os.Open(filepath)
+		if err != nil {
+			fmt.Println("打开文件错误:", err)
+			return
+		}
+		defer webpFile.Close()
+		// 解码 WebP 文件为图像对象
+		img, err := webp.Decode(webpFile)
+		if err != nil {
+			fmt.Println("图片解码错误:", err)
+			return
+		}
+
+		// 创建一个新的JPG文件
+		jpgFile, err := os.Create(fmt.Sprintf("%sjpeg", before))
+		if err != nil {
+			fmt.Println("创建图错误:", err)
+			return
+		}
+		defer jpgFile.Close()
+
+		// 将图像对象编码为JPG格式并写入文件
+		err = imaging.Encode(jpgFile, img, imaging.JPEG)
+		if err != nil {
+			fmt.Println("图片编码错误:", err)
+			return
+		}
+		fmt.Println("格式转换成功!")
+	}
 }

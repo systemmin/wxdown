@@ -6,7 +6,7 @@ path: ./data
 
 # 启动时在默认浏览器打开
 # true 开启 false 关闭 默认：true
-browser: true
+browser: false
 
 # HTML 转 PDF 配置
 # 下载 wkhtmltopdf 路径 https://wkhtmltopdf.org/downloads.html
