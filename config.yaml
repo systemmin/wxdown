@@ -6,14 +6,14 @@ path: ./data
 
 # 启动时在默认浏览器打开
 # true 开启 false 关闭 默认：true
-browser: false
+browser: true
 
 # HTML 转 PDF 配置
 # 下载 wkhtmltopdf 路径 https://wkhtmltopdf.org/downloads.html
-# window 建议下载后将 wkhtmltopdf 目录下载所有内容拷贝到项目根目录下，无需填写 path 路径
+# window 环境无需下载，已包含
 wkhtmltopdf:
   # true 开启 false 关闭 默认关闭
-  enable: false
+  enable: true
   # linux 例如：/usr/local/wkhtmltopdf/bin/
   # window 例如：E:\Program Files\wkhtmltopdf\bin
   path:

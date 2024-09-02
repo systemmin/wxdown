@@ -29,7 +29,7 @@ func GetParams(r *http.Request) (UrlParams, error) {
 	path := r.URL.Path
 	var urlParams UrlParams
 	switch r.Method {
-	case "POST":
+	case http.MethodPost:
 		err := ReadBody(r.Body, &urlParams)
 		if err != nil {
 			return urlParams, err

@@ -158,7 +158,7 @@ func CollectionHome(urlStr string, path string) ([]common.Collect, error) {
 				for _, article := range articleList {
 					articleMap, ok := article.(map[string]interface{})
 					if !ok {
-						panic("article is not a map")
+						fmt.Println("article is not a map")
 					}
 					collect.List = append(collect.List, articleMap["link"].(string))
 				}

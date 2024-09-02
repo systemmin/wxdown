@@ -89,7 +89,7 @@ func CollectionAlbum(urlStr string, path string) (common.Collect, error) {
 	// 1、解析首页
 	album, title := parseAlbum(urlStr)
 	title = utils.SanitizeFilename(title)
-	// 边读编写
+	// 边读边写
 	join := filepath.Join(path, "task", fmt.Sprintf("%s_%s", title, "start.txt"))
 	endPath := filepath.Join(path, "task", fmt.Sprintf("%s_%s", title, "end.txt"))
 	log.Println("写入任务地址:", join)
@@ -109,10 +109,16 @@ func CollectionAlbum(urlStr string, path string) (common.Collect, error) {
 	for {
 		// 分页加载
 		result := listPageAlbum(biz, albumId, mid, idx)
+		marshal, _ := json.Marshal(result)
+		//  {"base_resp":{"exportkey_token":"","ret":0},"getalbum_resp":{"base_info":{"is_first_screen":"0"},"continue_flag":"0","reverse_continue_flag":"1"}}
+		log.Println(string(marshal))
 		if result != nil {
 			resp := result["getalbum_resp"].(map[string]interface{})
 			// continue_flag 0 结束1 继续
 			continueFlag = resp["continue_flag"].(string)
+			if continueFlag == "0" {
+				break
+			}
 			// 结果最后一条直接返回对象
 			articleList, ok := resp["article_list"].([]interface{})
 			var urls []string
@@ -137,10 +143,7 @@ func CollectionAlbum(urlStr string, path string) (common.Collect, error) {
 			}
 			utils.WriteAppendFile(join, "\n"+strings.Join(urls, "\n"))
 		}
-		//continue_flag 0 结束1 继续
-		if continueFlag == "0" {
-			break
-		}
+
 	}
 	log.Println("合集地址采集完成")
 	file, err := os.ReadFile(join)

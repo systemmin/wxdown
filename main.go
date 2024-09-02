@@ -16,7 +16,7 @@ import (
 var runMode = "source"
 
 // version 版本号
-var version = "1.0.3"
+var version = "1.0.4"
 
 // LoggingMiddleware 记录每个请求的日志
 func LoggingMiddleware(next http.Handler) http.Handler {
@@ -40,6 +40,12 @@ func ContainsStr(slice []string, item string) bool {
 // AuthMiddleware 检查每个请求的身份验证
 func AuthMiddleware(next http.Handler, config config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			fmt.Println("options")
+			// options 直接返回 200
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 		path := r.URL.Path
 		paths := []string{"/ats", "/gather", "/collect", "/open"}
 		if config.Auth.Enable {

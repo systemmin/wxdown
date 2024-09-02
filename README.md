@@ -24,7 +24,24 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 
 使用文档移步 [wiki](https://github.com/systemmin/wxdown/wiki)
 
-### v1.0.3(当前版本)
+
+### v1.0.4(当前版本)
+
+替换根目录 `web`、`wxdown` 文件重新启动完成更新
+
+- 解决 [webp](https://mp.weixin.qq.com/s/_eeCF9JLOKF-YeojxsTmog) 图片格式无法转PDF问题
+- 解决标签合集不满足分页条件错误问题 [issues#4](https://github.com/systemmin/wxdown/issues/4) 
+- 新增图片集文章类型下载 [示例](https://mp.weixin.qq.com/s/2E5aiMre-NO0Vw9rnGTkCQ)
+
+| 操作系统               | 文件名                         | 链接                                    | 文件大小 |
+| ---------------------- | ------------------------------ | --------------------------------------- | -------- |
+| Windows                | wxdown-1.0.4-windows-amd64.zip | https://864000.lanzouj.com/iWeh328yffqb | 18.2 M   |
+| ARM Linux              | wxdown-1.0.4-darwin-arm64.zip  | https://864000.lanzouj.com/iyiSZ28yfi1e | 6.6 M    |
+| Linux                  | wxdown-1.0.4-linux-amd64.zip   | https://864000.lanzouj.com/idCnP28yfbef | 7.0 M    |
+| macOS                  | wxdown-1.0.4-linux-arm64.zip   | https://864000.lanzouj.com/igmYJ28yfcpc | 6.6 M    |
+| macOS（Apple Silicon） | wxdown-1.0.4-darwin-amd64.zip  | https://864000.lanzouj.com/iom6a28yfgwd | 6.9 M    |
+
+### v1.0.3
 
 替换根目录 `web`、`wxdown`、`config.yaml` 文件重新启动完成更新
 
@@ -34,6 +51,7 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 - 优化html、图片异步下载（可能会出现页面下载完了，图片还没有过会就好）
 - 优化管理页面
 - 重构代码
+- 
 
 | 操作系统               | 文件名                         | 链接                                    | 文件大小 |
 | ---------------------- | ------------------------------ | --------------------------------------- | -------- |
@@ -210,7 +228,6 @@ issue 或 pull request。
 
 - 本软件完全免费。
 - 请勿传播未经授权的文章或图片。
-
 - 使用软件造成的影响由使用者承担。
 - 仅供学习交流，严禁用于商业用途，请勿传播下载的数据。
 - 本脚本所获取的资源完全合法，与浏览器能直接获得的资源一致。

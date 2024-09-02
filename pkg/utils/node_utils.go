@@ -214,6 +214,25 @@ func ParseScriptVideo(doc *goquery.Document) ([]string, []string) {
 	return listData, coverUrl
 }
 
+// ParseAlbum 解析相册
+func ParseAlbum(doc *goquery.Document) []NodeContent {
+	var nodes []NodeContent
+	compile, _ := regexp.Compile(`https?://[^'\s"]+`)
+	doc.Find("script").Each(func(i int, child *goquery.Selection) {
+		//picture_page_info_list
+		text := child.Text()
+		if strings.Contains(text, "picture_page_info_list") {
+			findString := compile.FindAllString(text, -1)
+			for _, s := range findString {
+				if strings.Contains(s, "mmbiz_jpg") {
+					nodes = append(nodes, NodeContent{Node: child, Original: s, Target: "", Type: 2})
+				}
+			}
+		}
+	})
+	return nodes
+}
+
 func IsValueArray(array []string, key string) (string, int) {
 	for i, item := range array {
 		if strings.Contains(item, key) {

@@ -110,8 +110,20 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 
 	// 文章标题
 	activityName := doc.Find("#activity-name").Text()
+	if len(activityName) == 0 { // 图片轮播集
+		activityName = baseInfo["msg_title"]
+		fmt.Println(activityName)
+	}
+	// 图集表示
+	isAlbum := false
+
 	// 公众号名称
 	jsName := doc.Find("#js_name").Text()
+	if len(jsName) == 0 { // 图片轮播集
+		jsName = doc.Find(".wx_follow_nickname").Eq(0).Text()
+		isAlbum = true
+		fmt.Println(jsName)
+	}
 	jsName = utils.Iif(len(newName) > 0, newName, jsName)
 
 	fmt.Println("公众号名称：" + jsName)
@@ -138,6 +150,10 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 	videoUrls, coverUrls := utils.ParseScriptVideo(doc)
 	// 获取所有图片遍历并下载
 	nodes := utils.RecursionElement(jsContent)
+	// 图片合集
+	if isAlbum {
+		nodes = append(nodes, utils.ParseAlbum(doc)...)
+	}
 
 	var wgFile sync.WaitGroup
 	// 并发数量
@@ -237,6 +253,10 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 				join := strings.Join(styles, ";")
 				// 重新设置 style
 				node.Node.SetAttr("style", join)
+			} else if node.Type == 2 {
+				text := node.Node.Text()
+				replace := strings.Replace(text, node.Original, resetSrc, -1)
+				node.Node.SetHtml(replace)
 			}
 		}
 
@@ -247,13 +267,18 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 	}()
 
 	// 定义 css 路径
-	css := [...]string{
-		"index.lyptmz0d196f5b68.css",
-		"cover_next.lyptmz0d8abb784e.css",
-		"interaction.lyptmz0d9570c58b.css",
-		"qqmail_tpl_vite_entry.lyptmz0da92f2c62.css",
-		"tencent_portfolio_light.lyptmz0d0cd74df8.css",
-		"weui.min.css",
+	var css []string
+	if isAlbum {
+		css = append(css, "index.m0jn22vy4f03b36c.css", "qqmail_tpl_vite_entry.m0jn22vyffac437b.css")
+	} else {
+		css = append(css,
+			"index.lyptmz0d196f5b68.css",
+			"cover_next.lyptmz0d8abb784e.css",
+			"interaction.lyptmz0d9570c58b.css",
+			"qqmail_tpl_vite_entry.lyptmz0da92f2c62.css",
+			"tencent_portfolio_light.lyptmz0d0cd74df8.css",
+			"weui.min.css",
+		)
 	}
 
 	// 修改 link 引入文件路径
