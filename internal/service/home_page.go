@@ -115,18 +115,24 @@ func CollectionHome(urlStr string, path string) ([]common.Collect, error) {
 	album, title := parseHome(urlStr)
 	var category []string
 	var categoryList []string
+	// tab 二级分类
 	cateList := album["cate_list"].([]interface{})
-	for _, key := range cateList {
-		item := key.(map[string]interface{})
-		cname := item["cname"].(string)
-		category = append(category, cname)
-		appmsgList := item["appmsg_list"].([]interface{})
-		for _, app := range appmsgList {
-			appMsg := app.(map[string]interface{})
-			url := appMsg["link"].(string)
-			categoryList = append(categoryList, url)
+	if len(cateList) == 0 { // 首页合集无分类问题 see https://www.52pojie.cn/forum.php?mod=redirect&goto=findpost&ptid=1960591&pid=51251321
+		category = append(category, "default")
+	} else {
+		for _, key := range cateList {
+			item := key.(map[string]interface{})
+			cname := item["cname"].(string)
+			category = append(category, cname)
+			appmsgList := item["appmsg_list"].([]interface{})
+			for _, app := range appmsgList {
+				appMsg := app.(map[string]interface{})
+				url := appMsg["link"].(string)
+				categoryList = append(categoryList, url)
+			}
 		}
 	}
+
 	// 2、开始分页加载数据
 	begin := 0   // 开始数组长度
 	hasMore := 1 // 0结束 1继续

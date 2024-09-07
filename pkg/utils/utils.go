@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"bytes"
 	"fmt"
 	"go-wx-download/internal/constant"
 	"io"
@@ -218,10 +217,13 @@ func IsNotExistCreate(dirPath string) {
 // "sh", "-c", "cd /path/to/directory && your-command"
 func ToPDF(path string, url string, wk string) {
 	suffix := Iif(len(wk) > 0, fmt.Sprintf("cd %s && wkhtmltopdf", wk), "wkhtmltopdf")
-	cmd := fmt.Sprintf("%s %s %s", suffix, url, path)
+	// 通过设置系统变量来解决空格路径问题 see https://github.com/systemmin/wxdown/issues/5
+	sortPath := fmt.Sprintf(`set SHORT_PATH = "%s"`, path)
+	cmd := fmt.Sprintf(`%s && %s %s %s`, sortPath, suffix, url, "%SHORT_PATH%")
 	ExecuteCmd(cmd)
 }
 
+// ExecuteCmd 执行 cmd 命令
 func ExecuteCmd(cmd string) {
 	// 环境 退出 命令
 	var env, quit string
@@ -238,17 +240,14 @@ func ExecuteCmd(cmd string) {
 	}
 	fmt.Println("执行命令 :", env, quit, cmd)
 	command := exec.Command(env, quit, cmd)
-	// 创建一个缓冲区，用于存储命令的标准输出
-	var out bytes.Buffer
-	command.Stdout = &out
 	// 执行命令
-	err := command.Run()
+	out, err := command.CombinedOutput() // 获取输出和错误信息
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("执行命令时出错: %v\n输出: %s\n", err, string(out))
 		return
 	}
 	// 输出命令执行结果
-	fmt.Println("命令执行结果：", out.String())
+	fmt.Println("命令执行结果：", string(out))
 }
 
 func OpenBrowser(url string) {
