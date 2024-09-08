@@ -24,22 +24,44 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 
 使用文档移步 [wiki](https://github.com/systemmin/wxdown/wiki)
 
+### v1.0.5(当前版本)
 
-### v1.0.4(当前版本)
+替换根目录 `web`、`wxdown` 文件重新启动完成更新
+
+- 解决有空格的文件夹路径问题
+  - 生成 PDF 失败 [issues#4](https://github.com/systemmin/wxdown/issues/5)
+  - 无法通过浏览器打开文件夹
+- 解决首页合集无法下载 [52破解](https://www.52pojie.cn/forum.php?mod=viewthread&tid=1960591&page=8#pid51251321)
+- 新增图片预览功能
+
+注意事项：
+
+1. 不要安装在带有空格的文件路径中，避免不必要的麻烦（该问题已解决）
+2. window 下无法转 PDF 据部分[使用者反馈](https://www.52pojie.cn/forum.php?mod=redirect&goto=findpost&ptid=1960591&pid=51247865)可以通过双击 `wkhtmltopdf.exe`
+
+| 操作系统        | 链接                                                                                    | 文件大小   |
+|-------------|---------------------------------------------------------------------------------------|--------|
+| Windows     | [wxdown-1.0.5-windows-amd64.zip](https://864000.lanzouj.com/ifaG229hlsad "Windows")   | 18.6 M |
+| Linux       | [wxdown-1.0.5-linux-amd64.zip](https://864000.lanzouj.com/i0utt29hlqpg "Linux")     | 6.8 M  |
+| ARM Linux   | [wxdown-1.0.5-linux-arm64.zip](https://864000.lanzouj.com/iaDN929hlr2j "ARM Linux")     | 6.4 M  |
+| macOS       | [wxdown-1.0.5-darwin-arm64.zip](https://864000.lanzouj.com/iC0XT29hlt9i "macOS")    | 6.5 M  |
+| macOS（M 系列） | [wxdown-1.0.5-darwin-amd64.zip](https://864000.lanzouj.com/iQG4029hlsqj "macOS M 系列") | 6.8 M  |
+
+### v1.0.4
 
 替换根目录 `web`、`wxdown` 文件重新启动完成更新
 
 - 解决 [webp](https://mp.weixin.qq.com/s/_eeCF9JLOKF-YeojxsTmog) 图片格式无法转PDF问题
-- 解决标签合集不满足分页条件错误问题 [issues#4](https://github.com/systemmin/wxdown/issues/4) 
+- 解决标签合集不满足分页条件错误问题 [issues#4](https://github.com/systemmin/wxdown/issues/4)
 - 新增图片集文章类型下载 [示例](https://mp.weixin.qq.com/s/2E5aiMre-NO0Vw9rnGTkCQ)
 
-| 操作系统               | 文件名                         | 链接                                    | 文件大小 |
-| ---------------------- | ------------------------------ | --------------------------------------- | -------- |
-| Windows                | wxdown-1.0.4-windows-amd64.zip | https://864000.lanzouj.com/iWeh328yffqb | 18.2 M   |
-| ARM Linux              | wxdown-1.0.4-darwin-arm64.zip  | https://864000.lanzouj.com/iyiSZ28yfi1e | 6.6 M    |
-| Linux                  | wxdown-1.0.4-linux-amd64.zip   | https://864000.lanzouj.com/idCnP28yfbef | 7.0 M    |
-| macOS                  | wxdown-1.0.4-linux-arm64.zip   | https://864000.lanzouj.com/igmYJ28yfcpc | 6.6 M    |
-| macOS（Apple Silicon） | wxdown-1.0.4-darwin-amd64.zip  | https://864000.lanzouj.com/iom6a28yfgwd | 6.9 M    |
+| 操作系统                 | 文件名                            | 链接                                      | 文件大小   |
+|----------------------|--------------------------------|-----------------------------------------|--------|
+| Windows              | wxdown-1.0.4-windows-amd64.zip | https://864000.lanzouj.com/iWeh328yffqb | 18.2 M |
+| ARM Linux            | wxdown-1.0.4-darwin-arm64.zip  | https://864000.lanzouj.com/iyiSZ28yfi1e | 6.6 M  |
+| Linux                | wxdown-1.0.4-linux-amd64.zip   | https://864000.lanzouj.com/idCnP28yfbef | 7.0 M  |
+| macOS                | wxdown-1.0.4-linux-arm64.zip   | https://864000.lanzouj.com/igmYJ28yfcpc | 6.6 M  |
+| macOS（Apple Silicon） | wxdown-1.0.4-darwin-amd64.zip  | https://864000.lanzouj.com/iom6a28yfgwd | 6.9 M  |
 
 ### v1.0.3
 
@@ -51,16 +73,15 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 - 优化html、图片异步下载（可能会出现页面下载完了，图片还没有过会就好）
 - 优化管理页面
 - 重构代码
-- 
+-
 
-| 操作系统               | 文件名                         | 链接                                    | 文件大小 |
-| ---------------------- | ------------------------------ | --------------------------------------- | -------- |
-| Windows                | wxdown-1.0.3-windows-amd64.zip | https://864000.lanzouj.com/iR2ZM24ur81i | 18.1 M   |
-| ARM Linux              | wxdown-1.0.3-linux-arm64.zip   | https://864000.lanzouj.com/iq5LZ24ur59i | 6.0 M    |
-| Linux                  | wxdown-1.0.3-linux-amd64.zip   | https://864000.lanzouj.com/iDzcY24ur4be | 6.3 M    |
-| macOS                  | wxdown-1.0.3-darwin-arm64.zip  | https://864000.lanzouj.com/i34G224ur3cj | 6.0 M    |
-| macOS（Apple Silicon） | wxdown-1.0.3-darwin-amd64.zip  | https://864000.lanzouj.com/iwuPf24ur2ef | 6.3 M    |
-
+| 操作系统                 | 文件名                            | 链接                                      | 文件大小   |
+|----------------------|--------------------------------|-----------------------------------------|--------|
+| Windows              | wxdown-1.0.3-windows-amd64.zip | https://864000.lanzouj.com/iR2ZM24ur81i | 18.1 M |
+| ARM Linux            | wxdown-1.0.3-linux-arm64.zip   | https://864000.lanzouj.com/iq5LZ24ur59i | 6.0 M  |
+| Linux                | wxdown-1.0.3-linux-amd64.zip   | https://864000.lanzouj.com/iDzcY24ur4be | 6.3 M  |
+| macOS                | wxdown-1.0.3-darwin-arm64.zip  | https://864000.lanzouj.com/i34G224ur3cj | 6.0 M  |
+| macOS（Apple Silicon） | wxdown-1.0.3-darwin-amd64.zip  | https://864000.lanzouj.com/iwuPf24ur2ef | 6.3 M  |
 
 ### v1.0.2
 

@@ -53,6 +53,10 @@
     let parent = "";
     const main = document.querySelector("main");
     const dom = document.querySelector(".grid-container");
+    let viewerView = new Viewer(document.getElementById('viewer'), {
+        inline: false
+    });
+
     const loading = () => {
         listData.splice(0, 40).forEach(item => {
             let img = document.createElement("img");
@@ -63,12 +67,7 @@
             gridItem.append(img);
             dom.append(gridItem);
         })
-        const viewer = new Viewer(document.getElementById('viewer'), {
-            inline: false,
-            viewed() {
-                viewer.zoomTo(1);
-            },
-        });
+        viewerView.update();
     }
 
     window.addEventListener("message", (e) => {
