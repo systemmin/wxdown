@@ -37,8 +37,7 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 注意事项：
 
 1. 不要安装在带有空格的文件路径中，避免不必要的麻烦（该问题已解决）
-2. window 下无法转 PDF
-   据部分[使用者反馈](https://www.52pojie.cn/forum.php?mod=redirect&goto=findpost&ptid=1960591&pid=51247865)
+2. window 下无法转 PDF 据部分[使用者反馈](https://www.52pojie.cn/forum.php?mod=redirect&goto=findpost&ptid=1960591&pid=51247865)
    可以通过双击 `wkhtmltopdf.exe`
 
 | 操作系统        | 链接                                                                                    | 文件大小   |
