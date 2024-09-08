@@ -29,23 +29,25 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 替换根目录 `web`、`wxdown` 文件重新启动完成更新
 
 - 解决有空格的文件夹路径问题
-  - 生成 PDF 失败 [issues#4](https://github.com/systemmin/wxdown/issues/5)
-  - 无法通过浏览器打开文件夹
+    - 生成 PDF 失败 [issues#4](https://github.com/systemmin/wxdown/issues/5)
+    - 无法通过浏览器打开文件夹
 - 解决首页合集无法下载 [52破解](https://www.52pojie.cn/forum.php?mod=viewthread&tid=1960591&page=8#pid51251321)
 - 新增图片预览功能
 
 注意事项：
 
 1. 不要安装在带有空格的文件路径中，避免不必要的麻烦（该问题已解决）
-2. window 下无法转 PDF 据部分[使用者反馈](https://www.52pojie.cn/forum.php?mod=redirect&goto=findpost&ptid=1960591&pid=51247865)可以通过双击 `wkhtmltopdf.exe`
+2. window 下无法转 PDF
+   据部分[使用者反馈](https://www.52pojie.cn/forum.php?mod=redirect&goto=findpost&ptid=1960591&pid=51247865)
+   可以通过双击 `wkhtmltopdf.exe`
 
 | 操作系统        | 链接                                                                                    | 文件大小   |
 |-------------|---------------------------------------------------------------------------------------|--------|
 | Windows     | [wxdown-1.0.5-windows-amd64.zip](https://864000.lanzouj.com/ifaG229hlsad "Windows")   | 18.6 M |
-| Linux       | [wxdown-1.0.5-linux-amd64.zip](https://864000.lanzouj.com/i0utt29hlqpg "Linux")     | 6.8 M  |
-| ARM Linux   | [wxdown-1.0.5-linux-arm64.zip](https://864000.lanzouj.com/iaDN929hlr2j "ARM Linux")     | 6.4 M  |
-| macOS       | [wxdown-1.0.5-darwin-arm64.zip](https://864000.lanzouj.com/iC0XT29hlt9i "macOS")    | 6.5 M  |
-| macOS（M 系列） | [wxdown-1.0.5-darwin-amd64.zip](https://864000.lanzouj.com/iQG4029hlsqj "macOS M 系列") | 6.8 M  |
+| Linux       | [wxdown-1.0.5-linux-amd64.zip](https://864000.lanzouj.com/i0utt29hlqpg "Linux")       | 6.8 M  |
+| ARM Linux   | [wxdown-1.0.5-linux-arm64.zip](https://864000.lanzouj.com/iaDN929hlr2j "ARM Linux")   | 6.4 M  |
+| macOS       | [wxdown-1.0.5-darwin-amd64.zip](https://864000.lanzouj.com/iQG4029hlsqj "macOS")      | 6.5 M  |
+| macOS（M 系列） | [wxdown-1.0.5-darwin-arm64.zip](https://864000.lanzouj.com/iC0XT29hlt9i "macOS M 系列") | 6.8 M  |
 
 ### v1.0.4
 
