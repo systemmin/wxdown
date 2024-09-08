@@ -212,34 +212,28 @@ func IsNotExistCreate(dirPath string) {
 }
 
 // ToPDF html 转 PDF
-// cmd.exe /c cd C:\\your\\directory && your-command
-// cmd.exe /k
-// "sh", "-c", "cd /path/to/directory && your-command"
+// path 输出路径
+// url 访问地址
+// wk bin 路径
 func ToPDF(path string, url string, wk string) {
-	suffix := Iif(len(wk) > 0, fmt.Sprintf("cd %s && wkhtmltopdf", wk), "wkhtmltopdf")
-	// 通过设置系统变量来解决空格路径问题 see https://github.com/systemmin/wxdown/issues/5
-	sortPath := fmt.Sprintf(`set SHORT_PATH = "%s"`, path)
-	cmd := fmt.Sprintf(`%s && %s %s %s`, sortPath, suffix, url, "%SHORT_PATH%")
-	ExecuteCmd(cmd)
+	// 改变工作目录
+	if len(wk) > 0 {
+		err := os.Chdir(wk)
+		if err != nil {
+			fmt.Println("改变目录失败:", err)
+			return
+		}
+	}
+	if runtime.GOOS != "windows" && strings.Contains(path, " ") {
+		path = fmt.Sprintf(`"%s"`, path)
+	}
+	ExecuteCmd("wkhtmltopdf", url, path)
 }
 
 // ExecuteCmd 执行 cmd 命令
-func ExecuteCmd(cmd string) {
-	// 环境 退出 命令
-	var env, quit string
-	switch runtime.GOOS {
-	case "windows":
-		env = "cmd"
-		quit = "/c"
-	case "darwin":
-		env = "cmd"
-		quit = "-c"
-	default:
-		env = "cmd"
-		quit = "sh"
-	}
-	fmt.Println("执行命令 :", env, quit, cmd)
-	command := exec.Command(env, quit, cmd)
+func ExecuteCmd(cmd string, args ...string) {
+	fmt.Println("cmd:", cmd, "args:", args)
+	command := exec.Command(cmd, args...)
 	// 执行命令
 	out, err := command.CombinedOutput() // 获取输出和错误信息
 	if err != nil {
@@ -252,8 +246,6 @@ func ExecuteCmd(cmd string) {
 
 func OpenBrowser(url string) {
 	var err error
-	fmt.Errorf("cccc")
-
 	switch runtime.GOOS {
 	case "linux":
 		err = exec.Command("xdg-open", url).Start()

@@ -9,7 +9,6 @@
 package service
 
 import (
-	"fmt"
 	"go-wx-download/internal/common"
 	"go-wx-download/internal/constant"
 	"go-wx-download/pkg/list"
@@ -52,17 +51,15 @@ func Open(localPath string, r *http.Request) *utils.Result {
 	pathSegments := strings.Split(path, "/")
 	lastSegment := pathSegments[len(pathSegments)-1]
 	// 环境 退出 命令
+	sprintf := filepath.Join(localPath, lastSegment)
 	var cmd string
 	switch runtime.GOOS {
 	case "windows":
-		cmd = "start"
-	case "darwin":
-		cmd = "open"
+		cmd = "explorer"
 	default:
 		cmd = "open"
 	}
-	arg := filepath.Join(localPath, lastSegment)
-	utils.ExecuteCmd(fmt.Sprintf("%s %s", cmd, arg))
+	utils.ExecuteCmd(cmd, sprintf)
 	return utils.Success("操作成功", "")
 }
 

@@ -16,7 +16,7 @@ import (
 var runMode = "source"
 
 // version 版本号
-var version = "1.0.4"
+var version = "1.0.5"
 
 // LoggingMiddleware 记录每个请求的日志
 func LoggingMiddleware(next http.Handler) http.Handler {
