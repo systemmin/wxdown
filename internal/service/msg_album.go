@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -59,9 +60,17 @@ func parseAlbum(httpUrl string) ([]string, string) {
 	if err != nil {
 		log.Println(err)
 	}
+	// 视频合集标识
+	flagVideo := false
 
 	text := doc.Find("#js_tag_name").Text()
 	authorName := doc.Find(".album__author-name").First().Text()
+	if len(authorName) == 0 {
+		authorName = doc.Find(".video-album_account-name").First().Text()
+		if len(authorName) > 0 {
+			flagVideo = true
+		}
+	}
 	title := fmt.Sprintf("%s_%s", authorName, text)
 	var urls []string
 	log.Println("解析 dom 文章地址")
@@ -72,6 +81,24 @@ func parseAlbum(httpUrl string) ([]string, string) {
 			log.Println(i, ":", attr)
 		}
 	})
+	// 正则匹配，解析视频合集
+	if flagVideo {
+		log.Println("解析视频合集地址")
+		compile, _ := regexp.Compile(`https?://[^'\s"]+`)
+		doc.Find("script").Each(func(i int, child *goquery.Selection) {
+			script := child.Text()
+			if strings.Contains(script, "videoList") {
+				findString := compile.FindAllString(script, -1)
+				for _, s := range findString {
+					if strings.Contains(s, "__biz") {
+						attr := strings.ReplaceAll(s, "&amp;amp;", "&")
+						urls = append(urls, attr)
+						log.Println(i, ":", attr)
+					}
+				}
+			}
+		})
+	}
 	return urls, title
 }
 

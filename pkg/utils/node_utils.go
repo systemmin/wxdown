@@ -214,6 +214,31 @@ func ParseScriptVideo(doc *goquery.Document) ([]string, []string) {
 	return listData, coverUrl
 }
 
+// ParseScriptOldVideo 兼容旧版本
+func ParseScriptOldVideo(doc *goquery.Document) string {
+	var vid string
+	var urls []string
+	compile, _ := regexp.Compile(`https?://[^'\s"]+`)
+	vidRegexp, _ := regexp.Compile(`wxv_\d+`) // wxid
+	doc.Find("script").Each(func(i int, child *goquery.Selection) {
+		text := child.Text()
+		if strings.Contains(text, "__mpVideoTransInfo") {
+			findString := compile.FindAllString(text, -1)
+			for _, u := range findString {
+				if strings.Contains(u, "mpvideo") {
+					u = strings.ReplaceAll(strings.ReplaceAll(u, "\\x26amp;", "&"), "http://", "https://")
+					urls = append(urls, u)
+				}
+			}
+			vid = vidRegexp.FindString(text)
+		}
+	})
+	if len(urls) == 0 {
+		return ""
+	}
+	return fmt.Sprintf("%s&vid=%s&format_id=%s&support_redirect=0&mmversion=false", urls[len(urls)-1], vid, "10104")
+}
+
 // ParseAlbum 解析相册
 func ParseAlbum(doc *goquery.Document) []NodeContent {
 	var nodes []NodeContent

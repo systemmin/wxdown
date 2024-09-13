@@ -261,6 +261,15 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 		}
 
 	}
+	// 兼容旧版本视频
+	video := utils.ParseScriptOldVideo(doc)
+	if len(video) > 0 {
+		// 发布时间->序号->名称
+		videoName := fmt.Sprintf("%s_%d_%s.mp4", createTime, 0, baseInfo["activity_Name"])
+		videoPath := filepath.Join(path, baseInfo["js_name"], "videos", videoName)
+		wgFile.Add(1)
+		down.DownloadFile(video, videoPath, headers, semFile, &wgFile)
+	}
 	// 等待所有下载完成
 	go func() {
 		wgFile.Wait()
