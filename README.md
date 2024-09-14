@@ -41,11 +41,11 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 
 | 操作系统        | 链接                                                                                    | 文件大小   |
 |-------------|---------------------------------------------------------------------------------------|--------|
-| Windows     | [wxdown-1.0.6-windows-amd64.zip](https://864000.lanzouj.com/iWFWO29z2tra "Windows")   | 18.6 M |
-| Linux       | [wxdown-1.0.6-linux-amd64.zip](https://864000.lanzouj.com/i1ffQ29z2t3g "Linux")       | 6.8 M  |
-| ARM Linux   | [wxdown-1.0.6-linux-arm64.zip](https://864000.lanzouj.com/iOiFE29z2tdg "ARM Linux")   | 6.4 M  |
-| macOS       | [wxdown-1.0.6-darwin-amd64.zip](https://864000.lanzouj.com/iNRzT29z2u2b "macOS")      | 6.5 M  |
-| macOS（M 系列） | [wxdown-1.0.6-darwin-arm64.zip](https://864000.lanzouj.com/iHMjN29z2uih "macOS M 系列") | 6.8 M  |
+| Windows     | [wxdown-1.0.6-windows-amd64.zip](https://864000.lanzouj.com/idWga29zu25e "Windows")   | 18.6 M |
+| Linux       | [wxdown-1.0.6-linux-amd64.zip](https://864000.lanzouj.com/imv9V29zu00h "Linux")       | 6.8 M  |
+| ARM Linux   | [wxdown-1.0.6-linux-arm64.zip](https://864000.lanzouj.com/i8Ef529zu0mj "ARM Linux")   | 6.4 M  |
+| macOS       | [wxdown-1.0.6-darwin-amd64.zip](https://864000.lanzouj.com/i52k629zu2kj "macOS")      | 6.5 M  |
+| macOS（M 系列） | [wxdown-1.0.6-darwin-arm64.zip](https://864000.lanzouj.com/igIiu29ztzgh "macOS M 系列") | 6.8 M  |
 
 ### v1.0.5
 

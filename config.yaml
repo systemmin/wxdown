@@ -10,7 +10,8 @@ browser: true
 
 # HTML 转 PDF 配置
 # 下载 wkhtmltopdf 路径 https://wkhtmltopdf.org/downloads.html
-# window 环境无需下载，已包含
+# window 环境无需下载，已包含 wkhtmltopdf.exe。
+# 如果你单独安装了 wkhtmltopdf 请删除根目录下 wkhtmltopdf.exe
 wkhtmltopdf:
   # true 开启 false 关闭 默认关闭
   enable: true
