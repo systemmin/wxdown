@@ -11,7 +11,7 @@ rem 定义输出文件名
 set output=wxdown
 
 rem 定义输出版本
-set version=1.0.5
+set version=1.0.6
 
 rem 遍历每个平台并构建
 for %%p in (%platforms%) do (

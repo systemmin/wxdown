@@ -24,7 +24,30 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 
 使用文档移步 [wiki](https://github.com/systemmin/wxdown/wiki)
 
-### v1.0.5(当前版本)
+### v1.0.6(当前版本)
+
+替换根目录 `wxdown` 文件重新启动完成更新
+
+- 向下兼容 [视频合集](https://mp.weixin.qq.com/s?__biz=MjM5NzQ4OTkwNg==&mid=2247534412&idx=6&sn=edeb6c07b40583a0e5f37253660137a4&chksm=a6db3ad191acb3c78e3af57dca5432d211f488a7c8d7db3d58c5a69b9152840d1944bf2afd92&scene=178) 无法下载问题（2021年前后文章）
+- 只做视频处理，页面无任何处理。
+
+注意事项：
+
+1. 没有该视频需求的无需更新
+2. 出现以下错误时，删除根目录 `wkhtmltopdf.exe`（单独安装了 wkhtmltopdf 会出现以下问题）。
+   ```shell
+    exec: "wkhtmltopdf": cannot run executable found relative to current directory
+    ```
+
+| 操作系统        | 链接                                                                                    | 文件大小   |
+|-------------|---------------------------------------------------------------------------------------|--------|
+| Windows     | [wxdown-1.0.6-windows-amd64.zip](https://864000.lanzouj.com/iWFWO29z2tra "Windows")   | 18.6 M |
+| Linux       | [wxdown-1.0.6-linux-amd64.zip](https://864000.lanzouj.com/i1ffQ29z2t3g "Linux")       | 6.8 M  |
+| ARM Linux   | [wxdown-1.0.6-linux-arm64.zip](https://864000.lanzouj.com/iOiFE29z2tdg "ARM Linux")   | 6.4 M  |
+| macOS       | [wxdown-1.0.6-darwin-amd64.zip](https://864000.lanzouj.com/iNRzT29z2u2b "macOS")      | 6.5 M  |
+| macOS（M 系列） | [wxdown-1.0.6-darwin-arm64.zip](https://864000.lanzouj.com/iHMjN29z2uih "macOS M 系列") | 6.8 M  |
+
+### v1.0.5
 
 替换根目录 `web`、`wxdown` 文件重新启动完成更新
 
