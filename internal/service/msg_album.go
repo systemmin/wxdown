@@ -141,13 +141,13 @@ func CollectionAlbum(urlStr string, path string) (common.Collect, error) {
 		log.Println(string(marshal))
 		if result != nil {
 			resp := result["getalbum_resp"].(map[string]interface{})
-			// continue_flag 0 结束1 继续
-			continueFlag = resp["continue_flag"].(string)
-			if continueFlag == "0" {
-				break
-			}
 			// 结果最后一条直接返回对象
 			articleList, ok := resp["article_list"].([]interface{})
+			// continue_flag 0 结束1 继续,2024年9月14日18:14:50 处理 结束表示为0时，可能依然存在结果
+			continueFlag = resp["continue_flag"].(string)
+			if continueFlag == "0" && !ok {
+				break
+			}
 			var urls []string
 			if ok {
 				for _, article := range articleList {
