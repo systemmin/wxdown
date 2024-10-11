@@ -2,6 +2,7 @@ package down
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"github.com/disintegration/imaging"
 	"go-wx-download/pkg/utils"
@@ -38,6 +39,7 @@ func DownloadFile(url string, filepath string, headers map[string]string, sem ch
 		fmt.Println("创建请求实例时出错:", err)
 		return
 	}
+
 	// 拷贝文件到本地
 	_, err = io.Copy(file, bytes.NewReader(response)) // 字节转 reader 对象
 	if err != nil {
@@ -46,6 +48,30 @@ func DownloadFile(url string, filepath string, headers map[string]string, sem ch
 	}
 	webPToJPEG(filepath)
 	log.Println(filepath)
+}
+
+// ImageToBase64 图片转base64
+func ImageToBase64(url, suffix string, headers map[string]string, sem chan struct{}, wg *sync.WaitGroup) string {
+	defer wg.Done()
+
+	// 从信号量中获取一个令牌
+	sem <- struct{}{}
+	defer func() { <-sem }() // 确保在函数返回时释放信号量令牌
+	// 创建一个 HttpClient 实例，设置超时时间为 10 分钟
+	client := utils.NewHttpClient(10 * 60 * time.Second)
+	// 发送请求
+	response, err := client.Request("GET", url, headers, nil)
+	if err != nil {
+		fmt.Println("创建请求实例时出错:", err)
+		return ""
+	}
+	// 将图片内容转换为Base64编码
+	base64Str := base64.StdEncoding.EncodeToString(response)
+
+	// 拼接前缀
+	base64WithPrefix := "data:image/" + suffix + ";base64," + base64Str
+
+	return base64WithPrefix
 }
 
 // webpToJPG webp 转 jpeg 格式

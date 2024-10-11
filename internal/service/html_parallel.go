@@ -38,7 +38,7 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 		log.Printf("当前资源：[%s]\n", item)
 		wg.Add(1)
 		// 异步
-		go downloadHtml(item, localPath, urlParams.Folder, host, sem, &wg, filePaths, cfg.Thread.Image)
+		go downloadHtml(item, localPath, urlParams.Folder, host, cfg.Base64, sem, &wg, filePaths, cfg.Thread.Image)
 	}
 	// 等待所有下载完成
 	go func() {
@@ -73,7 +73,7 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 	return true
 }
 
-func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *sync.WaitGroup, filePaths chan string, thread int) {
+func downloadHtml(urlStr, path, newName, host string, base64 bool, sem chan struct{}, wg *sync.WaitGroup, filePaths chan string, thread int) {
 	defer wg.Done()
 
 	// 从信号量中获取一个令牌
@@ -160,6 +160,8 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 	maxConcurrency := utils.Iit(thread > 0, thread, 20)
 	// 创建 sem 通道
 	semFile := make(chan struct{}, maxConcurrency)
+	// 创建 base64 通道
+	base64String := make(chan string, len(nodes))
 	// 创建 set
 	sets := make(map[string]string)
 	for i, node := range nodes {
@@ -226,19 +228,26 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 			fileName := fmt.Sprintf("%s_%x_%d.%s", createTime, md5Sum, i, suffix)
 			imageJoin := filepath.Join(path, baseInfo["js_name"], "images", fileName)
 			resetSrc := "../images/" + fileName
-			// 未下载调用线程进行下载
-			if len(sets[string(md5Sum)]) == 0 {
+			// 图片转Base
+			if base64 {
 				// 添加线程计数
 				wgFile.Add(1)
-				down.DownloadFile(original, imageJoin, nil, semFile, &wgFile)
-				sets[string(md5Sum)] = fileName
+				resetSrc = down.ImageToBase64(original, suffix, nil, semFile, &wgFile)
 			} else {
-				// 重新赋值已下载内容
-				resetSrc = "../images/" + sets[string(md5Sum)]
-			}
-			before, b := strings.CutSuffix(resetSrc, "webp") // 转 PDF 有问题图片格式处理
-			if b {
-				resetSrc = fmt.Sprintf("%sjpeg", before)
+				// 未下载调用线程进行下载
+				if len(sets[string(md5Sum)]) == 0 {
+					// 添加线程计数
+					wgFile.Add(1)
+					down.DownloadFile(original, imageJoin, nil, semFile, &wgFile)
+					sets[string(md5Sum)] = fileName
+				} else {
+					// 重新赋值已下载内容
+					resetSrc = "../images/" + sets[string(md5Sum)]
+				}
+				before, b := strings.CutSuffix(resetSrc, "webp") // 转 PDF 有问题图片格式处理
+				if b {
+					resetSrc = fmt.Sprintf("%sjpeg", before)
+				}
 			}
 			// 重置属性值
 			if node.Type == 0 {
@@ -273,6 +282,7 @@ func downloadHtml(urlStr, path, newName, host string, sem chan struct{}, wg *syn
 	// 等待所有下载完成
 	go func() {
 		wgFile.Wait()
+		close(base64String)
 	}()
 
 	// 定义 css 路径
