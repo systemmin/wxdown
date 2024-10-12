@@ -36,11 +36,11 @@
 
 | 操作系统        | 链接                                                                                    | 文件大小   |
 |-------------|---------------------------------------------------------------------------------------|--------|
-| Windows     | [wxdown-1.0.6-windows-amd64.zip](https://864000.lanzouj.com/icw432ce30if "Windows")   | 18.6 M |
-| Linux       | [wxdown-1.0.6-linux-amd64.zip](https://864000.lanzouj.com/ivusg2ce337c "Linux")       | 6.8 M  |
-| ARM Linux   | [wxdown-1.0.6-linux-arm64.zip](https://864000.lanzouj.com/iHwXY2ce2ygb "ARM Linux")   | 6.4 M  |
-| macOS       | [wxdown-1.0.6-darwin-amd64.zip](https://864000.lanzouj.com/i7xyx2ce31ve "macOS")      | 6.5 M  |
-| macOS（M 系列） | [wxdown-1.0.6-darwin-arm64.zip](https://864000.lanzouj.com/iXT7l2ce32mb "macOS M 系列") | 6.8 M  |
+| Windows     | [wxdown-1.0.7-windows-amd64.zip](https://864000.lanzouj.com/icw432ce30if "Windows")   | 18.6 M |
+| Linux       | [wxdown-1.0.7-linux-amd64.zip](https://864000.lanzouj.com/ivusg2ce337c "Linux")       | 6.8 M  |
+| ARM Linux   | [wxdown-1.0.7-linux-arm64.zip](https://864000.lanzouj.com/iHwXY2ce2ygb "ARM Linux")   | 6.4 M  |
+| macOS       | [wxdown-1.0.7-darwin-amd64.zip](https://864000.lanzouj.com/i7xyx2ce31ve "macOS")      | 6.5 M  |
+| macOS（M 系列） | [wxdown-1.0.7-darwin-arm64.zip](https://864000.lanzouj.com/iXT7l2ce32mb "macOS M 系列") | 6.8 M  |
 
 
 ### v1.0.6
