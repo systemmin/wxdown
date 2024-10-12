@@ -215,7 +215,7 @@ func downloadHtml(urlStr, path, newName, host string, base64 bool, sem chan stru
 			}
 			break
 		default:
-			// 计算图片内容的 MD5 哈希值
+			// 文件名 MD5 哈希值
 			hash := md5.New()
 			hash.Write([]byte(original))
 			md5Sum := hash.Sum(nil)

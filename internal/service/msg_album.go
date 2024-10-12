@@ -143,11 +143,8 @@ func CollectionAlbum(urlStr string, path string) (common.Collect, error) {
 			resp := result["getalbum_resp"].(map[string]interface{})
 			// 结果最后一条直接返回对象
 			articleList, ok := resp["article_list"].([]interface{})
-			// continue_flag 0 结束1 继续,2024年9月14日18:14:50 处理 结束表示为0时，可能依然存在结果
 			continueFlag = resp["continue_flag"].(string)
-			if continueFlag == "0" && !ok {
-				break
-			}
+
 			var urls []string
 			if ok {
 				for _, article := range articleList {
@@ -160,15 +157,21 @@ func CollectionAlbum(urlStr string, path string) (common.Collect, error) {
 					urls = append(urls, articleMap["url"].(string))
 				}
 			} else {
-				articleMap := resp["article_list"].(map[string]interface{})
-				// 文章 id = msgId
-				mid = articleMap["msgid"].(string)
-				// 索引下标
-				idx = articleMap["itemidx"].(string)
-				fmt.Println(mid, idx)
-				urls = append(urls, articleMap["url"].(string))
+				articleMap, ok := resp["article_list"].(map[string]interface{})
+				if ok {
+					// 文章 id = msgId
+					mid = articleMap["msgid"].(string)
+					// 索引下标
+					idx = articleMap["itemidx"].(string)
+					fmt.Println(mid, idx)
+					urls = append(urls, articleMap["url"].(string))
+				}
 			}
 			utils.WriteAppendFile(join, "\n"+strings.Join(urls, "\n"))
+			// 结束
+			if continueFlag == "0" {
+				break
+			}
 		}
 
 	}
