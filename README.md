@@ -4,8 +4,8 @@
 
 # wxdown
 
-这是一个用于保存公众号文章到本地离线查看的软件，支持将 HTML 文章保存至本地，并提供 HTML 转 PDF 的功能。此外，软件还支持图片、音频、视频下载，可在
-Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量级、小体积、高性能和并发支持的特点。
+这是一个用于保存公众号文章到本地离线查看的软件，支持将 HTML 文章保存至本地，并提供 HTML 转 PDF 的功能。此外，软件还支持图片、音频、视频下载，可在 Windows、Mac 和 Linux 系统上运行，使用 Go
+语言开发，具备轻量级、小体积、高性能和并发支持的特点。
 
 **不支持批量直接获取文章列表**
 
@@ -20,18 +20,37 @@ Windows、Mac 和 Linux 系统上运行，使用 Go 语言开发，具备轻量�
 - 使用 Go 语言开发，轻量级、高性能、高并发
 - 提供简单易用的 Web 界面管理
 
-### 历史版本
+## 使用文档
 
-使用文档移步 [wiki](https://github.com/systemmin/wxdown/wiki)
+**移步** [wiki](https://github.com/systemmin/wxdown/wiki)
 
-### v1.0.6(当前版本)
+## 历史版本
+
+### v1.0.7(当前版本)
+
+替换根目录 `wxdown`、`web` 、`config.yaml`文件重新启动完成更新
+
+- 增加图片转 `base64` 详见 `config.yaml`
+- 优化合集下载缺少部分文章问题
+- 优化图片集部分无法下载图片问题
+
+| 操作系统        | 链接                                                                                    | 文件大小   |
+|-------------|---------------------------------------------------------------------------------------|--------|
+| Windows     | [wxdown-1.0.6-windows-amd64.zip](https://864000.lanzouj.com/icw432ce30if "Windows")   | 18.6 M |
+| Linux       | [wxdown-1.0.6-linux-amd64.zip](https://864000.lanzouj.com/ivusg2ce337c "Linux")       | 6.8 M  |
+| ARM Linux   | [wxdown-1.0.6-linux-arm64.zip](https://864000.lanzouj.com/iHwXY2ce2ygb "ARM Linux")   | 6.4 M  |
+| macOS       | [wxdown-1.0.6-darwin-amd64.zip](https://864000.lanzouj.com/i7xyx2ce31ve "macOS")      | 6.5 M  |
+| macOS（M 系列） | [wxdown-1.0.6-darwin-arm64.zip](https://864000.lanzouj.com/iXT7l2ce32mb "macOS M 系列") | 6.8 M  |
+
+
+### v1.0.6
 
 替换根目录 `wxdown` 文件重新启动完成更新
 
-- 向下兼容 [视频合集](https://mp.weixin.qq.com/s?__biz=MjM5NzQ4OTkwNg==&mid=2247534412&idx=6&sn=edeb6c07b40583a0e5f37253660137a4&chksm=a6db3ad191acb3c78e3af57dca5432d211f488a7c8d7db3d58c5a69b9152840d1944bf2afd92&scene=178) 无法下载问题（2021年前后文章）
+- 向下兼容 [视频合集](https://mp.weixin.qq.com/s?__biz=MjM5NzQ4OTkwNg==&mid=2247534412&idx=6&sn=edeb6c07b40583a0e5f37253660137a4&chksm=a6db3ad191acb3c78e3af57dca5432d211f488a7c8d7db3d58c5a69b9152840d1944bf2afd92&scene=178)
+无法下载问题（2021年前后文章）
 - 只做视频处理，页面无任何处理。
-- 图片无法预览问题，点击下载 [web](https://864000.lanzouj.com/i3LbK2ab74sd "Pages")，替换根目录 `web` 文件夹 
-
+- 图片无法预览问题，点击下载 [web](https://864000.lanzouj.com/i3LbK2ab74sd "Pages")，替换根目录 `web` 文件夹
 
 注意事项：
 
@@ -266,8 +285,7 @@ go run main.go
 
 ## 开发和贡献
 
-本软件使用 Go 语言开发，欢迎开发者贡献代码或提出改进建议。请在 [GitHub](https://github.com/systemmin/wxdown/issues) 上提交
-issue 或 pull request。
+本软件使用 Go 语言开发，欢迎开发者贡献代码或提出改进建议。请在 [GitHub](https://github.com/systemmin/wxdown/issues) 上提交 issue 或 pull request。
 
 ## 注意事项
 

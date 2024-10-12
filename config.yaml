@@ -28,7 +28,7 @@ thread:
 
 # 图片转 base64 格式，系统不会下载图片，页面直接嵌入 base64 字符串
 # true 开启 false 关闭（默认）
-base64: true
+base64: false
 
 # http 基础认证
 auth:
