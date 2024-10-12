@@ -30,7 +30,6 @@ thread:
 # true 开启 false 关闭（默认）
 base64: true
 
-
 # http 基础认证
 auth:
   # true 开启 false 关闭 默认关闭

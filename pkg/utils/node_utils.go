@@ -249,8 +249,9 @@ func ParseAlbum(doc *goquery.Document) []NodeContent {
 		if strings.Contains(text, "picture_page_info_list") {
 			findString := compile.FindAllString(text, -1)
 			for _, s := range findString {
-				if strings.Contains(s, "mmbiz_jpg") {
-					nodes = append(nodes, NodeContent{Node: child, Original: s, Target: "", Type: 2})
+				if strings.Contains(s, "wx_fmt") {
+					all := strings.ReplaceAll(s, "\\x26amp;", "&")
+					nodes = append(nodes, NodeContent{Node: child, Original: all, Target: s, Type: 2})
 				}
 			}
 		}

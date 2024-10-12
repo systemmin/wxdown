@@ -264,7 +264,7 @@ func downloadHtml(urlStr, path, newName, host string, base64 bool, sem chan stru
 				node.Node.SetAttr("style", join)
 			} else if node.Type == 2 {
 				text := node.Node.Text()
-				replace := strings.Replace(text, node.Original, resetSrc, -1)
+				replace := strings.Replace(text, node.Target, resetSrc, -1)
 				node.Node.SetHtml(replace)
 			}
 		}
