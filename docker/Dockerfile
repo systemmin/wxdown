@@ -1,14 +1,16 @@
-# 使用一个基础镜像，例如 Ubuntu
-FROM centos:7
+# Centos 官方镜像
+FROM quay.io/centos/centos:stream9
 
-# 设置 LANG 环境变量为 en_US.UTF-8
+# 设置 LANG 和 LC_ALL 环境变量为 en_US.UTF-8
 ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
 # 设置工作目录
 WORKDIR /wx
 
-# 更新包列表并安装依赖项
-RUN yum -y update && yum -y install \
+# 更新包列表并安装依赖项、X 环境和字体，同时清理缓存
+RUN dnf -y update && \
+    dnf -y install \
     epel-release \
     wget \
     xorg-x11-server-Xvfb \
@@ -18,25 +20,31 @@ RUN yum -y update && yum -y install \
     libXext \
     libXrender \
     libjpeg \
-    openssl \
-    wqy-zenhei-fonts \
-    wqy-microhei-fonts \
-    wqy-zenhei-fonts \
-    && yum clean all
+    openssl && \
+    dnf clean all && \
+    # 安装并生成 locale
+    dnf install -y glibc-locale-source glibc-langpack-en && \
+    localedef -i en_US -f UTF-8 en_US.UTF-8 && \
+    # 清理无用的临时文件
+    rm -rf /var/cache/dnf
 
 # 将本地下载的 wkhtmltopdf 包复制到容器中
-COPY wkhtmltox-0.12.6-1.centos7.x86_64.rpm /tmp/wkhtmltox.rpm
+COPY wkhtmltox-0.12.6.1-2.almalinux9.x86_64.rpm /tmp/wkhtmltox.rpm
 
 # 安装 wkhtmltopdf 包
-RUN rpm -Uvh /tmp/wkhtmltox.rpm
+RUN rpm -Uvh /tmp/wkhtmltox.rpm && \
+    rm /tmp/wkhtmltox.rpm
 
-# 删除复制的 rpm 包
-RUN rm /tmp/wkhtmltox.rpm
+# 复制字体到容器中，解决中文乱码问题
+COPY ./fonts/ /usr/share/fonts/
+
+# 刷新字体缓存
+RUN fc-cache -fv
 
 # 将 Go 程序的二进制文件复制到容器中
 COPY ./wx /wx
 
-# 给二进制文件执行权限
+# 给 Go 程序二进制文件添加执行权限
 RUN chmod +x /wx/wxdown
 
 # 暴露端口

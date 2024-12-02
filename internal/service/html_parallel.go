@@ -59,7 +59,7 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 			list := split[len(split)-3:]
 			fmt.Println(list)
 			// 第一个参数 主机地址； 第二个参数 文件夹； 第三个参数 文件名称
-			httpURL := fmt.Sprintf("http://%s/wx/%s/html/%s", host, url.QueryEscape(list[0]), url.QueryEscape(list[2]))
+			httpURL := fmt.Sprintf("http://127.0.0.1:%s/wx/%s/html/%s", cfg.Port, url.QueryEscape(list[0]), url.QueryEscape(list[2]))
 			f = filepath.Join(localPath, list[0], "pdf", list[2][0:len(list[2])-len(".html")]+".pdf")
 			// 异步执行
 			go utils.ToPDF(f, httpURL, cfg.Wkhtmltopdf.Path)

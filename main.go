@@ -166,7 +166,7 @@ func main() {
 	mux.HandleFunc("/gather/", func(writer http.ResponseWriter, request *http.Request) {
 		controller.Gather(writer, request, cfg, defaultDataPath)
 	})
-	// 合计采集
+	// 合集采集
 	mux.HandleFunc("/collect/", func(writer http.ResponseWriter, request *http.Request) {
 		controller.Collect(writer, request, cfg, defaultDataPath)
 	})
