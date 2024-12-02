@@ -191,15 +191,31 @@ func main() {
 		}
 	})
 
-	utils.InitPrint(defaultPort, version, runMode, exPath, defaultDataPath)
+	protocol := utils.Iif(cfg.Https, "https", "http")
+
+	utils.InitPrint(protocol, defaultPort, version, runMode, exPath, defaultDataPath)
+
+	// 打开默认浏览器
 	if cfg.Browser {
-		utils.OpenBrowser("http://127.0.0.1:" + defaultPort)
+		utils.OpenBrowser(fmt.Sprintf("%s://127.0.0.1:%s", protocol, defaultPort))
 	}
 	// 指定监听的地址和端口
 	addr := ":" + defaultPort
 
+	server := &http.Server{
+		Addr:    addr,
+		Handler: handler,
+	}
+
+	if cfg.Https {
+		// 加载自签名的证书和私钥
+		err = server.ListenAndServeTLS("certs/certificate.crt", "certs/private.key")
+	} else {
+		err = http.ListenAndServe(addr, handler)
+	}
+
 	// 启动服务器
-	if err := http.ListenAndServe(addr, handler); err != nil {
-		fmt.Printf("无法启动服务器: %s\n", err)
+	if err != nil {
+		log.Fatalf("无法启动服务器: %s\n", err)
 	}
 }

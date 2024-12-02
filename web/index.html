@@ -53,7 +53,7 @@
             <input type="text" id="folder" name="folder" list="foodList" placeholder="输入自定义目录名称">
             <datalist id="foodList">
             </datalist>
-            <label for="collectAddress">采集地址（必填）</label>
+            <label for="collectAddress">采集地址（必填）;增量获取自动获取剪切板内容，需要先点击一次下面输入框。</label>
             <textarea id="collectAddress" name="urls" placeholder=""></textarea>
             <div style="display: flex;gap: 20px;">
                 <button type="submit">采集</button>
@@ -84,8 +84,8 @@
                 <li>✅单个链接</li>
             </ul>
         </div>
-        <p> <a href="https://github.com/systemmin/wxdown/issues" target="_blank">GitHub Bug 反馈</a></p>
-        <p> <a href="https://gitee.com/bxmms/wxdown/issues" target="_blank">Gitee Bug 反馈</a></p>
+        <p><a href="https://github.com/systemmin/wxdown/issues" target="_blank">GitHub Bug 反馈</a></p>
+        <p><a href="https://gitee.com/bxmms/wxdown/issues" target="_blank">Gitee Bug 反馈</a></p>
 
     </section>
     <iframe id="iframe" name="child" width="100%" src="images.html" frameborder="0"></iframe>
@@ -116,7 +116,7 @@
             "transition": "opacity 0.3s"
         };
         // 创建轻提示元素
-        var toast = document.createElement('div');
+        const toast = document.createElement('div');
         toast.className = 'toast';
         toast.textContent = message;
         for (let key of Object.keys(styles)) {
@@ -340,11 +340,55 @@
         document.getElementById('foodList').innerHTML = opts;
         rendering(folders);
     }
+    // 读取剪切板
+    const readClipboardText = async () => {
+        try {
+            // 请求剪切板的读取权限
+            const permission = await navigator.permissions.query({name: "clipboard-read"});
+            if (permission.state === "granted" || permission.state === "prompt") {
+                // 读取剪切板中的文本
+                const text = await navigator.clipboard.readText();
+                console.log("Clipboard content:", text);
+                const urlNode = document.getElementById('collectAddress');
+                const urlText = urlNode.value;
+                let old = [];
+                if (urlText) {
+                    old = urlText.split("\n").filter(item => item.length > 0).map(item => item.trim());
+                }
+                const set = new Set(old);
+                if (text && text.trim()) {
+                    set.add(text.trim())
+                }
+                const arrayStr = [...set].join("\n");
+                urlNode.value = arrayStr;
+            } else {
+                console.error("Clipboard read permission is denied.");
+            }
+        } catch (error) {
+            console.error("Failed to read clipboard contents: ", error);
+        }
+    }
+
 
     // 匿名函数
     (() => {
         init()
+        // 调用函数
+        readClipboardText();
     })()
+
+    // 监听页面返回
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+            readClipboardText()
+        }
+    });
+
+    // 聚焦事件
+    document.getElementById('collectAddress').addEventListener("focus", () => {
+        readClipboardText()
+    })
+
 
     // 采集任务
     document.getElementById('task').addEventListener('click', () => {

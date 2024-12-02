@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func InitPrint(port string, version string, runMode string, runPath string, resourcePath string) {
+func InitPrint(protocol, port string, version string, runMode string, runPath string, resourcePath string) {
 	// 定义格式化布局
 	currentTime := time.Now()
 	// 格式化时间
@@ -24,7 +24,8 @@ func InitPrint(port string, version string, runMode string, runPath string, reso
 	fmt.Printf("操作系统 : %s\n", runtime.GOOS)
 	fmt.Printf("系统架构 : %s\n", runtime.GOARCH)
 	fmt.Printf("启动时间 : %s\n", formattedTime)
-	fmt.Println("检测更新 : https://github.com/systemmin/wxdown")
+	fmt.Println("检测更新 GitHub: https://github.com/systemmin/wxdown")
+	fmt.Println("检测更新 Gitee: https://github.com/systemmin/wxdown")
 
 	fmt.Println(gang)
 	fmt.Println("\t\t\t服务信息")
@@ -32,11 +33,11 @@ func InitPrint(port string, version string, runMode string, runPath string, reso
 	fmt.Println("服务地址：")
 
 	for _, ip := range ips {
-		fmt.Printf("\thttp://%s:%s\t(浏览器访问)\n", ip, port)
+		fmt.Printf("\t%s://%s:%s\t(浏览器访问)\n", protocol, ip, port)
 	}
 	fmt.Println("采集接口：")
 	for _, ip := range ips {
-		fmt.Printf("\thttp://%s:%s/gather/\t(GET|POST|HEAD)\n", ip, port)
+		fmt.Printf("\t%s://%s:%s/gather/\t(GET|POST|HEAD)\n", protocol, ip, port)
 	}
 
 	fmt.Println(gang)
