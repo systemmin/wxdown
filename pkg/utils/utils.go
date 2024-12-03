@@ -219,18 +219,14 @@ func IsNotExistCreate(dirPath string) {
 // url 访问地址
 // wk bin 路径
 func ToPDF(path string, url string, wk string) {
-	// 改变工作目录
-	if len(wk) > 0 {
-		err := os.Chdir(wk)
-		if err != nil {
-			fmt.Println("改变目录失败:", err)
-			return
-		}
-	}
 	if runtime.GOOS != "windows" && strings.Contains(path, " ") {
 		path = fmt.Sprintf(`"%s"`, path)
 	}
-	ExecuteCmd("wkhtmltopdf", url, path)
+	cmd := "wkhtmltopdf"
+	if len(wk) > 0 {
+		cmd = filepath.Join(wk, cmd)
+	}
+	ExecuteCmd(cmd, url, path)
 }
 
 // ExecuteCmd 执行 cmd 命令

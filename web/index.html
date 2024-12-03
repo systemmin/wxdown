@@ -88,7 +88,7 @@
         <p><a href="https://gitee.com/bxmms/wxdown/issues" target="_blank">Gitee Bug 反馈</a></p>
 
     </section>
-    <iframe id="iframe" name="child" width="100%" src="images.html" frameborder="0"></iframe>
+    <iframe id="iframe" name="iframe" width="100%" src="images.html" frameborder="0"></iframe>
 </main>
 
 <script src="https://hm.baidu.com/hm.js?69bc11719d31206cbc65c13979ea5c69"></script>
@@ -243,7 +243,7 @@
         rootDom.classList.add('active');
         if (length) {
             const listStr = listData.map((item) => {
-                return `<li><time style="color:#fff;font-size: 12px">${item.cteTime}</time><br><a target="child" href="${item.link}">${item.original}</a></li>`
+                return `<li><time style="color:#fff;font-size: 12px">${item.cteTime}</time><br><a target="iframe" href="${item.link}">${item.original}</a></li>`
             }).join('')
             wxArticle.innerHTML = `<ul>${listStr}</ul>`
         } else {

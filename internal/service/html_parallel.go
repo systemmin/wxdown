@@ -38,7 +38,7 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 		log.Printf("当前资源：[%s]\n", item)
 		wg.Add(1)
 		// 异步
-		go downloadHtml(item, localPath, urlParams.Folder, host, cfg.Base64, sem, &wg, filePaths, cfg.Thread.Image)
+		go downloadHtml(item, localPath, urlParams.Folder, sem, &wg, filePaths, cfg)
 	}
 	// 等待所有下载完成
 	go func() {
@@ -46,20 +46,18 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 		close(filePaths) // 释放
 	}()
 
-	// 收集所有文件大小
+	// 遍历html转PDF
 	for f := range filePaths {
-		log.Println(f)
 		// 转PDF
 		if cfg.Wkhtmltopdf.Enable && len(f) > 0 {
 			if len(f) <= 0 {
 				continue
 			}
-			fmt.Println("文件路径：" + f)
 			split := strings.Split(f, string(os.PathSeparator))
 			list := split[len(split)-3:]
-			fmt.Println(list)
 			// 第一个参数 主机地址； 第二个参数 文件夹； 第三个参数 文件名称
-			httpURL := fmt.Sprintf("http://127.0.0.1:%s/wx/%s/html/%s", cfg.Port, url.QueryEscape(list[0]), url.QueryEscape(list[2]))
+			protocol := utils.Iif(cfg.Https, "https", "http")
+			httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", protocol, cfg.Port, url.QueryEscape(list[0]), url.QueryEscape(list[2]))
 			f = filepath.Join(localPath, list[0], "pdf", list[2][0:len(list[2])-len(".html")]+".pdf")
 			// 异步执行
 			go utils.ToPDF(f, httpURL, cfg.Wkhtmltopdf.Path)
@@ -68,12 +66,11 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 	// 结束时间
 	end := time.Now()
 	duration := end.Sub(start)
-	fmt.Println("结束时间：", end)
 	fmt.Println("采集耗时：", duration)
 	return true
 }
 
-func downloadHtml(urlStr, path, newName, host string, base64 bool, sem chan struct{}, wg *sync.WaitGroup, filePaths chan string, thread int) {
+func downloadHtml(urlStr, path, newName string, sem chan struct{}, wg *sync.WaitGroup, filePaths chan string, cfg *config.Config) {
 	defer wg.Done()
 
 	// 从信号量中获取一个令牌
@@ -157,7 +154,7 @@ func downloadHtml(urlStr, path, newName, host string, base64 bool, sem chan stru
 
 	var wgFile sync.WaitGroup
 	// 并发数量
-	maxConcurrency := utils.Iit(thread > 0, thread, 20)
+	maxConcurrency := utils.Iit(cfg.Thread.Image > 0, cfg.Thread.Image, 20)
 	// 创建 sem 通道
 	semFile := make(chan struct{}, maxConcurrency)
 	// 创建 base64 通道
@@ -229,7 +226,7 @@ func downloadHtml(urlStr, path, newName, host string, base64 bool, sem chan stru
 			imageJoin := filepath.Join(path, baseInfo["js_name"], "images", fileName)
 			resetSrc := "../images/" + fileName
 			// 图片转Base
-			if base64 {
+			if cfg.Base64 {
 				// 添加线程计数
 				wgFile.Add(1)
 				resetSrc = down.ImageToBase64(original, suffix, nil, semFile, &wgFile)
@@ -319,7 +316,8 @@ func downloadHtml(urlStr, path, newName, host string, base64 bool, sem chan stru
 		return
 	}
 	// 采集页面信息 URL 替换
-	html = strings.ReplaceAll(html, "https://badjs.weixinbridge.com", "http://"+host)
+	//protocol := utils.Iif(cfg.Https, "https", "http")
+	html = strings.ReplaceAll(html, "https://badjs.weixinbridge.com", "")
 
 	fileName := fmt.Sprintf("%s-%s.html", baseInfo["createTime"][0:10], baseInfo["activity_Name"])
 	join := filepath.Join(path, baseInfo["js_name"], "html", fileName)
