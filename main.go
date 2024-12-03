@@ -18,6 +18,9 @@ var runMode = "source"
 // version 版本号
 var version = "1.0.7"
 
+// listData db map 数据
+var listData = make([]map[string]bool, 0)
+
 // LoggingMiddleware 记录每个请求的日志
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -132,6 +135,11 @@ func main() {
 		utils.CopyFile(dst, src)
 	}
 
+	// 加载已下载文章链接数据
+	if cfg.Override {
+		listData = utils.LoadDBData(defaultDataPath)
+	}
+
 	// 创建一个新的 mux 路由器
 	mux := http.NewServeMux()
 
@@ -164,11 +172,11 @@ func main() {
 
 	// 单个采集
 	mux.HandleFunc("/gather/", func(writer http.ResponseWriter, request *http.Request) {
-		controller.Gather(writer, request, cfg, defaultDataPath)
+		controller.Gather(writer, request, cfg, defaultDataPath, listData)
 	})
 	// 合集采集
 	mux.HandleFunc("/collect/", func(writer http.ResponseWriter, request *http.Request) {
-		controller.Collect(writer, request, cfg, defaultDataPath)
+		controller.Collect(writer, request, cfg, defaultDataPath, listData)
 	})
 
 	// wx 无实际意义加快响应

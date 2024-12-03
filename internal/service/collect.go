@@ -13,14 +13,14 @@ import (
 	"time"
 )
 
-func Collect(r *http.Request, cfg *config.Config, localPath string) *utils.Result {
+func Collect(r *http.Request, cfg *config.Config, localPath string, listData []map[string]bool) *utils.Result {
 	host := r.Host
 	params, err := common.GetParams(r)
 	if err != nil {
 		return utils.Failure("参数解析异常", err)
 	}
-	fmt.Println("自定义文件名：", params.Folder)
-	fmt.Println("采集URL：", params.Urls)
+	fmt.Println("Folder：", params.Folder)
+	fmt.Println("URL：", params.Urls)
 
 	if list.IsEmpty(params.Urls) {
 		return utils.Failure("地址为空", "")
@@ -57,7 +57,7 @@ func Collect(r *http.Request, cfg *config.Config, localPath string) *utils.Resul
 		if len(params.Folder) == 0 { // 覆盖 名称
 			params.Folder = collect.Name
 		}
-		html := HandleDownHTML(cfg, &params, host, localPath)
+		html := HandleDownHTML(cfg, &params, host, localPath, listData)
 		if html {
 			// 拷贝任务文件
 			utils.CopyFile(collect.EndPath, collect.StartPath)

@@ -16,10 +16,10 @@ import (
 )
 
 // Collect 合集
-func Collect(w http.ResponseWriter, r *http.Request, cfg *config.Config, path string) {
+func Collect(w http.ResponseWriter, r *http.Request, cfg *config.Config, path string, listData []map[string]bool) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	data := service.Collect(r, cfg, path)
+	data := service.Collect(r, cfg, path, listData)
 	marshal, _ := json.Marshal(data)
 	_, err := w.Write(marshal)
 	if err != nil {

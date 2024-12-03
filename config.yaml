@@ -2,21 +2,33 @@
 port: 81
 
 # 本地数据文件存储路径
-path: ./data
+path: ./news
 
 # 启动时在默认浏览器打开
-# true 开启 false 关闭 默认：true
+# true | false [开启|关闭]
 browser: true
+
+# 图片转 base64 格式，系统不会下载图片，页面直接嵌入 base64 字符串
+# true | false [开启|关闭]
+base64: false
+
+# https 访问，开启后使用 https://127.0.0.1:81 访问
+# true | false [开启|关闭]
+https: false
+
+# 重复文章处理，覆盖或跳过
+# true | false [跳过|覆盖]
+override: false
 
 # HTML 转 PDF 配置
 # 下载 wkhtmltopdf 路径 https://wkhtmltopdf.org/downloads.html
 # window 环境无需下载，已包含 wkhtmltopdf.exe。
 # 如果你单独安装了 wkhtmltopdf 请删除根目录下 wkhtmltopdf.exe
 wkhtmltopdf:
-  # true 开启 false 关闭 默认关闭
+  # true | false [开启|关闭]
   enable: true
   # linux 例如：/usr/local/wkhtmltopdf/bin/
-  # window 例如：E:\Program Files\wkhtmltopdf\bin
+  # window 例如：E:\Program Files\wkhtmltopdf\bin\
   path:
 
 # 采集线程配置
@@ -26,18 +38,11 @@ thread:
   # 同时下载图片线程数量
   image: 20
 
-# 图片转 base64 格式，系统不会下载图片，页面直接嵌入 base64 字符串
-# true 开启 false 关闭（默认）
-base64: false
-
-# 开启 https 访问
-https: true
-
 # http 基础认证
 auth:
-  # true 开启 false 关闭 默认关闭
+  # true | false [开启|关闭]
   enable: false
-  # 用户 账号：密码
+  # 用户 [账号:密码]
   users:
     - admin:123456
     - visitor:123456

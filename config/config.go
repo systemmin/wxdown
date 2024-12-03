@@ -21,9 +21,10 @@ type Config struct {
 		Html  int `yaml:"html"`
 		Image int `yaml:"image"`
 	} `yaml:"thread"`
-	Base64 bool `yaml:"base64"`
-	Https  bool `yaml:"https"`
-	Auth   struct {
+	Base64   bool `yaml:"base64"`
+	Https    bool `yaml:"https"`
+	Override bool `yaml:"override"`
+	Auth     struct {
 		Enable bool     `yaml:"enable"`
 		Users  []string `yaml:"users"`
 	} `yaml:"auth"`

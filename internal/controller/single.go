@@ -16,10 +16,10 @@ import (
 )
 
 // Gather w 响应对象 r 请求对象 path 本地文件根路径 port 端口
-func Gather(w http.ResponseWriter, r *http.Request, cfg *config.Config, path string) {
+func Gather(w http.ResponseWriter, r *http.Request, cfg *config.Config, path string, listData []map[string]bool) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	data := service.Gather(r, cfg, path)
+	data := service.Gather(r, cfg, path, listData)
 	marshal, _ := json.Marshal(data)
 	_, err := w.Write(marshal)
 	if err != nil {

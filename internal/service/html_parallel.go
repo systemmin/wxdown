@@ -10,6 +10,7 @@ import (
 	"go-wx-download/internal/common"
 	"go-wx-download/internal/constant"
 	"go-wx-download/pkg/down"
+	"go-wx-download/pkg/list"
 	"go-wx-download/pkg/utils"
 	"log"
 	"net/url"
@@ -20,11 +21,27 @@ import (
 	"time"
 )
 
+// 全局变量
+var downloaded []string
+
 // HandleDownHTML 下载 html 原始文件
-func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, localPath string) bool {
+func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, localPath string, listData []map[string]bool) bool {
 	// 开始时间
 	start := time.Now()
-	urls := urlParams.Urls
+	var urls []string
+	// 处理重复文件
+	for _, item := range urlParams.Urls {
+		if cfg.Override && len(listData) > 0 && utils.CheckUrl(item, listData) {
+			log.Println("已存在，跳过")
+			continue
+		}
+		if cfg.Override && !list.IsEmpty(downloaded) && list.IsExist(downloaded, item) {
+			log.Println("已存在，跳过")
+			continue
+		}
+		urls = append(urls, item)
+		downloaded = append(downloaded, item)
+	}
 	// 定义 goroutines 等待组
 	var wg sync.WaitGroup
 	// 并发数量
@@ -34,6 +51,7 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 	// 用于存储文件地址的通道
 	filePaths := make(chan string, len(urls))
 	for i, item := range urls {
+
 		log.Printf("当前下标：[%d]\n", i+1)
 		log.Printf("当前资源：[%s]\n", item)
 		wg.Add(1)
@@ -57,7 +75,7 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 			list := split[len(split)-3:]
 			// 第一个参数 主机地址； 第二个参数 文件夹； 第三个参数 文件名称
 			protocol := utils.Iif(cfg.Https, "https", "http")
-			httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", protocol, cfg.Port, url.QueryEscape(list[0]), url.QueryEscape(list[2]))
+			httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", protocol, cfg.Port, url.PathEscape(list[0]), url.PathEscape(list[2]))
 			f = filepath.Join(localPath, list[0], "pdf", list[2][0:len(list[2])-len(".html")]+".pdf")
 			// 异步执行
 			go utils.ToPDF(f, httpURL, cfg.Wkhtmltopdf.Path)
@@ -327,7 +345,7 @@ func downloadHtml(urlStr, path, newName string, sem chan struct{}, wg *sync.Wait
 		return
 	}
 
-	// 打开文件，如果文件不存在则创建，使用os.O_APPEND标志表示追加内容
+	// 打开文件，如果文件不存在则创建，使用 os.O_APPEND 标志表示追加内容
 	file, err := os.OpenFile(filepath.Join(path, baseInfo["js_name"], "db", "db.jsonl"), os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Printf("打开文件失败: %v\n", err)
