@@ -39,7 +39,7 @@
 
 [下载地址](https://864000.lanzouj.com/b0hchwr3e) 密码：1gn6
 
-### [历史版本](https://github.com/systemmin/wxdown/blob/master/CHANGELOG)
+### [历史版本](https://github.com/systemmin/wxdown/blob/master/CHANGELOG.md)
 
 ## docker 运行
 
