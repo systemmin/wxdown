@@ -25,7 +25,7 @@ func InitPrint(protocol, port string, version string, runMode string, runPath st
 	fmt.Printf("系统架构 : %s\n", runtime.GOARCH)
 	fmt.Printf("启动时间 : %s\n", formattedTime)
 	fmt.Println("检测更新 GitHub: https://github.com/systemmin/wxdown")
-	fmt.Println("检测更新 Gitee: https://github.com/systemmin/wxdown")
+	fmt.Println("检测更新 Gitee: https://gitee.com/bxmms/wxdown")
 
 	fmt.Println(gang)
 	fmt.Println("\t\t\t服务信息")

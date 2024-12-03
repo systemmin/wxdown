@@ -76,12 +76,6 @@ func copyFile(src, dst string) error {
 
 func copyResource() {
 	// 获取当前工作路径
-	cwd, err := os.Getwd()
-	if err != nil {
-		log.Fatalf("获取当前工作路径失败: %s\n", err)
-		return
-	}
-	fmt.Println("cwd：", cwd)
 	dir, err := os.ReadDir("./")
 	if err != nil {
 		log.Fatalln("读取项目根目录失败", err)
@@ -97,19 +91,36 @@ func copyResource() {
 			folder = append(folder, entry.Name())
 		}
 	}
+
 	// 遍历输出文件夹
 	for _, f := range folder {
-		fmt.Println(f)
-		web := filepath.Join(cwd, f, "web")
+		// web 文件夹 拷贝
+		web := filepath.Join(f, "web")
 		utils.IsNotExistCreate(web)
 		if err := copyDir("web", web); err != nil {
 			fmt.Printf("Error copying directory: %v\n", err)
 		} else {
 			fmt.Println("Copy complete")
 		}
+
+		// certs 文件夹 拷贝
+		certs := filepath.Join(f, "certs")
+		utils.IsNotExistCreate(certs)
+		if err := copyDir("certs", certs); err != nil {
+			fmt.Printf("Error copying directory: %v\n", err)
+		} else {
+			fmt.Println("Copy complete")
+		}
+
 		// 拼接路径
 		dst := filepath.Join(f, "config.yaml")
 		utils.CopyFile(dst, "./config.yaml")
+
+		// 拷贝 wk
+		if strings.Contains(f, "windows") {
+			dst = filepath.Join(f, "wkhtmltopdf.exe")
+			utils.CopyFile(dst, "docker/wkhtmltopdf.exe")
+		}
 	}
 	fmt.Println("完成资源拷贝!....")
 	fmt.Println("打包!....")
@@ -136,6 +147,9 @@ func copyResource() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		// 删除文件夹
+		os.Remove(f)
 	}
 }
 

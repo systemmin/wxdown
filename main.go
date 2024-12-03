@@ -16,7 +16,7 @@ import (
 var runMode = "source"
 
 // version 版本号
-var version = "1.0.7"
+var version = "1.0.8"
 
 // listData db map 数据
 var listData = make([]map[string]bool, 0)
@@ -217,7 +217,7 @@ func main() {
 
 	if cfg.Https {
 		// 加载自签名的证书和私钥
-		err = server.ListenAndServeTLS("certs/certificate.crt", "certs/private.key")
+		err = server.ListenAndServeTLS(filepath.Join(exPath, "certs", "certificate.crt"), filepath.Join(exPath, "certs", "private.key"))
 	} else {
 		err = http.ListenAndServe(addr, handler)
 	}

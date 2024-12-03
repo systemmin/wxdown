@@ -2,7 +2,7 @@
 port: 81
 
 # 本地数据文件存储路径
-path: ./news
+path: ./data
 
 # 启动时在默认浏览器打开
 # true | false [开启|关闭]

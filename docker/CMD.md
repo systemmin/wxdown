@@ -1,45 +1,34 @@
-##  打包
+### 打包镜像
+
+1. 将 `fonts` 目录上传到 `Dockerfile` 同级目录下
+2. 将 `wkhtmltox-0.12.6.1-2.almalinux9.x86_64.rpm` 目录上传到 `Dockerfile` 同级目录下
+
+执行打包命令：
 
 ```shell
 docker build -t wxdown .
 ```
 
-## 启动
+### 挂载目录
 
-- `/wx/data/` 数据目录文件
-- `/wx/config/` 配置文件目录，将 `config.yaml` 拷贝至`/home/wxdown/config/`下
-
-1. 创建挂载目录
-    ```shell
-    mkdir -p /home/wxdown/data/
-    mkdir -p /home/wxdown/config/
-    ```
-
-2. 启动 docker 容器
-    ```shell
-    docker run -p 81:81 --name wxdown \
-    -v /home/wxdown/data/:/wx/data/ \
-    -v /home/wxdown/config/:/wx/config/ \
-    -d wxdown
-    ```
-
-## 访问
-
-浏览器访问 http://localhost:81 localhost 可以修改为具体的 `IP` 地址
-
-## 扩展
-
-### 进入 wxdown 容器
+- `data` 数据目录
+- `config` 配置文件目录
+- `certs` 证书目录
 
 ```shell
-docker exec -it wxdown /bin/sh
+mkdir -p /home/wxdown/
 ```
 
-### HTML 转 PDF
-
-命令：`禁用 js` `html 地址` `输出文件路径`
+### 启动容器
 
 ```shell
-wkhtmltopdf --debug-javascript http://127.0.0.1 /wx/output.pdf
-```
+ docker run -p 81:81 --name wxdown \
+ -v /home/wxdown/data/:/wx/ \
+ -d wxdown
+ ```
 
+### 访问 81
+
+http://localhost:81 或 http://127.0.0.1:81
+
+`localhost` 可以修改为具体的 `IP` 地址
