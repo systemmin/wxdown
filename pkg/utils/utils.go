@@ -18,10 +18,7 @@ import (
 // SanitizeFilename 处理名称特殊字符
 func SanitizeFilename(filename string) string {
 	// 使用正则表达式替换掉不允许的字符为空字符
-	sanitizedFilename := regexp.MustCompile(`[<>:"/\\|?*\r\n\s\*…]`).ReplaceAllString(filename, "")
-
-	// 在Windows系统中，还应该移除 \ 和 /，因为它们是路径分隔符
-	sanitizedFilename = regexp.MustCompile(`[\\/]`).ReplaceAllString(sanitizedFilename, "")
+	sanitizedFilename := regexp.MustCompile(`[\\/:*?"<>|\r\n]`).ReplaceAllString(filename, "")
 
 	// 移除表情符号
 	sanitizedFilename = regexp.MustCompile("[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\u2600-\u26FF\u2700-\u27BF\U0001F900-\U0001F9FF\U0001FA70-\U0001FAFF]").ReplaceAllString(sanitizedFilename, "")
