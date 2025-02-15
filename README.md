@@ -26,18 +26,12 @@
 
 ## 软件版本
 
-### v1.0.8 (当前版本)
+### v1.0.9 (当前版本)
 
-替换所有文件（不包含 `data`）
+替换 `wxdown`
+- 解决视频解析导致系统中断 bug [issues#4](https://github.com/systemmin/wxdown/issues/15)
 
-- 新增 docker 镜像
-- 新增浏览器剪切板监听，Chrome 浏览器获取剪切板内容需 https 协议，详见配置文件 [config.yaml#L15](https://github.com/systemmin/wxdown/blob/master/config.yaml#L15)
-- 新增 `https` 证书配置，自签证书浏览器会提示不安全连接，可 [手动安装证书](https://dtking.cn/blog/custom-ssl-v3/#4-dao3-ru4-zheng4-shu1-dao4-liu2-lan3-qi4) 文件 `certs/certificate.crt`
-- 新增下载重复文章跳过功能，详见配置文件 [config.yaml#L19](https://github.com/systemmin/wxdown/blob/master/config.yaml#L19)
-- 优化公网部署转PDF加载慢，转PDF服务地址统一改 `127.0.0.1/wx/....`
-- 优化 html 转 PDF 问题
-
-[下载地址](https://864000.lanzouj.com/b0hchwr3e) 密码：1gn6
+[下载地址](https://864000.lanzouu.com/b0hcr5bad) 密码：wxdown
 
 ### [历史版本](https://github.com/systemmin/wxdown/blob/master/CHANGELOG.md)
 
@@ -214,7 +208,7 @@ go run main.go
 
 **您**的鼓励💪就是我前进的动力🫶鼓励方式有多种，选择你喜欢的😍，当然不鼓励也没关系哦！😄
 
-- [GitHub Start](https://github.com/systemmin/kill-doc) ⭐
+- [GitHub Start](https://github.com/systemmin/wxdown) ⭐
 - 打赏💰（*量力而行*）
 
 <img src="https://dtking.cn/pay.png" alt="赞赏" style="zoom: 67%;" />
