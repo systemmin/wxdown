@@ -201,10 +201,11 @@ func ParseScriptVideo(doc *goquery.Document) ([]string, []string) {
 	if len(videos) == 0 {
 		return listData, coverUrl
 	}
-	group := len(videos) / len(hitVid) // 视频数组长度 / vi数组长度 = 视频可以被分的组数
-
+	index := make(map[string]string)
 	for i, key := range videos {
-		vIdIndex := i / group // 得到对应的 视频 id
+		k := key[:40] // 截取视频地址前 40 个字符。解决 issues/15
+		index[k] = k
+		vIdIndex := len(index) - 1
 		sprintf := fmt.Sprintf("%s&vid=%s&format_id=%s&support_redirect=0&mmversion=false", key, hitVid[vIdIndex], format[i])
 		array, _ := IsValueArray(listData, hitVid[vIdIndex])
 		if videoLevel[i] == "3" && len(array) == 0 { // 只保留高清
