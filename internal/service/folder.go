@@ -102,7 +102,7 @@ func getFolderDetail(path string, folder string, fType string) []common.Folder {
 		if !file.IsDir() {
 			name := file.Name()
 			info, _ := file.Info()
-			if name == ".DS_Store" || name == "css" {
+			if name == ".DS_Store" || name == "css" || strings.HasSuffix(name, "docx") {
 				continue
 			}
 			timeStr := name[0:10]                        // 截取文章发布时间 := name[0:10]                // 截取文章发布时间

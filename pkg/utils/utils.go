@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -211,6 +212,15 @@ func IsNotExistCreate(dirPath string) {
 	}
 }
 
+// ResolveFilePath 解析文件路径
+// wxName 公众号名称、wxTile 文章名称、wxFullTitle 完整名称、
+func ResolveFilePath(pathStr string) (wxName, wxTile, wxFullTitle string) {
+	split := strings.Split(pathStr, string(os.PathSeparator))
+	ext := path.Ext(pathStr)     // 文件后缀
+	list := split[len(split)-3:] // 截取 /公众号/html/文件名称.html
+	return list[0], strings.ReplaceAll(list[2], ext, ""), list[2]
+}
+
 // ToPDF html 转 PDF
 // path 输出路径
 // url 访问地址
@@ -224,6 +234,22 @@ func ToPDF(path string, url string, wk string) {
 		cmd = filepath.Join(wk, cmd)
 	}
 	ExecuteCmd(cmd, url, path)
+}
+
+// ToWord html 转 word
+// input 输入路径
+// output 输出路径
+// pc bin 路径
+func ToWord(input string, output string, pc string) {
+	if runtime.GOOS != "windows" && strings.Contains(input, " ") {
+		input = fmt.Sprintf(`"%s"`, input)
+	}
+	cmd := "pandoc"
+	if len(pc) > 0 {
+		cmd = filepath.Join(pc, cmd)
+	}
+	images := filepath.Join(output, "../../", "images") // 从指定文件夹检索图片
+	ExecuteCmd(cmd, input, "-o", output, fmt.Sprintf("--resource-path=%s", images))
 }
 
 // ExecuteCmd 执行 cmd 命令
@@ -240,6 +266,7 @@ func ExecuteCmd(cmd string, args ...string) {
 	fmt.Println("命令执行结果：", string(out))
 }
 
+// OpenBrowser 打开默认浏览器
 func OpenBrowser(url string) {
 	var err error
 	switch runtime.GOOS {

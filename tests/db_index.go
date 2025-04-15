@@ -11,8 +11,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -77,17 +77,37 @@ func LoadDBData(path string) []map[string]bool {
 
 var listData = make([]map[string]bool, 10)
 
+// ResolveFilePath 解析文件路径
+// wxName 公众号名称、wxTile 文章名称、wxFullTitle 完整名称、
+func ResolveFilePath(pathStr string) (wxName, wxTile, wxFullTitle string) {
+	split := strings.Split(pathStr, string(os.PathSeparator))
+	ext := path.Ext(pathStr)     // 文件后缀
+	list := split[len(split)-3:] // 截取 /公众号/html/文件名称.html
+	return list[0], strings.ReplaceAll(list[2], ext, ""), list[2]
+}
+
 func main() {
-	name := "技术最前线"
-	html := "2024-11-28-字节起诉前实习生，索赔 800 万.html"
-	httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", "http", "81", url.PathEscape(name), url.PathEscape(html))
-	fmt.Println(httpURL)
-	// 包含空格的字符串
-	str := "Hello World"
+	//	name := "技术最前线"
+	//	html := "2024-11-28-字节起诉前实习生，索赔 800 万.html"
+	//	httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", "http", "81", url.PathEscape(name), url.PathEscape(html))
+	//	fmt.Println(httpURL)
+	//	// 包含空格的字符串
+	//	str := "Hello World"
+	//
+	//	// 使用url.QueryEscape进行URL编码
+	//	encodedStr := url.QueryEscape(str)
+	//
+	//	// 打印编码后的字符串
+	//	fmt.Println(encodedStr) // 输出: Hello%20World
 
-	// 使用url.QueryEscape进行URL编码
-	encodedStr := url.QueryEscape(str)
+	//split := strings.Split(, string(os.PathSeparator))
+	//list := split[len(split)-3:]
+	//fmt.Println(list)
+	// 第一个参数 主机地址； 第二个参数 文件夹； 第三个参数 文件名称
+	//httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", protocol, cfg.Port, url.PathEscape(list[0]), url.PathEscape(list[2]))
+	//f = filepath.Join(localPath, list[0], "pdf", list[2][0:len(list[2])-len(".html")]+".pdf")
+	p := "D:\\code\\private\\wxdown\\data\\TonyBai\\html\\2025-04-15-11个现代Go特性：用goplsmodernize让你的代码焕然一新.html"
+	join := filepath.Join(p, "../../", "images")
+	fmt.Println(join)
 
-	// 打印编码后的字符串
-	fmt.Println(encodedStr) // 输出: Hello%20World
 }

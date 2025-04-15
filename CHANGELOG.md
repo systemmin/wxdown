@@ -1,3 +1,10 @@
+### v1.0.9
+
+替换 `wxdown`
+- 解决视频解析导致系统中断 bug [issues#4](https://github.com/systemmin/wxdown/issues/15)
+
+[下载地址](https://864000.lanzouu.com/b0hcr5bad) 密码：wxdown
+
 ### v1.0.8
 
 替换所有文件（不包含 `data`）

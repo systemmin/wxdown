@@ -64,23 +64,8 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 		close(filePaths) // 释放
 	}()
 
-	// 遍历html转PDF
-	for f := range filePaths {
-		// 转PDF
-		if cfg.Wkhtmltopdf.Enable && len(f) > 0 {
-			if len(f) <= 0 {
-				continue
-			}
-			split := strings.Split(f, string(os.PathSeparator))
-			list := split[len(split)-3:]
-			// 第一个参数 主机地址； 第二个参数 文件夹； 第三个参数 文件名称
-			protocol := utils.Iif(cfg.Https, "https", "http")
-			httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", protocol, cfg.Port, url.PathEscape(list[0]), url.PathEscape(list[2]))
-			f = filepath.Join(localPath, list[0], "pdf", list[2][0:len(list[2])-len(".html")]+".pdf")
-			// 异步执行
-			go utils.ToPDF(f, httpURL, cfg.Wkhtmltopdf.Path)
-		}
-	}
+	// 开始处理文件转换
+	fileFormatConversion(filePaths, localPath, cfg)
 	// 结束时间
 	end := time.Now()
 	duration := end.Sub(start)
@@ -88,6 +73,44 @@ func HandleDownHTML(cfg *config.Config, urlParams *common.UrlParams, host, local
 	return true
 }
 
+// fileFormatConversion 文件格式转换
+func fileFormatConversion(filePaths <-chan string, localPath string, cfg *config.Config) {
+	// 创建通信
+	sem := make(chan struct{}, 5)
+	var wg sync.WaitGroup // 等待组
+	for file := range filePaths {
+		if len(file) <= 0 {
+			continue
+		}
+		sem <- struct{}{} // 占坑
+		wg.Add(1)
+
+		go func(f string) {
+			defer wg.Done()
+			defer func() { <-sem }() // 释放
+
+			// 文件路径解析
+			wxName, wxTile, fullTitle := utils.ResolveFilePath(f)
+			// pdf
+			if cfg.Wkhtmltopdf.Enable {
+				protocol := utils.Iif(cfg.Https, "https", "http")
+				httpURL := fmt.Sprintf("%s://127.0.0.1:%s/wx/%s/html/%s", protocol, cfg.Port, url.PathEscape(wxName), url.PathEscape(fullTitle))
+				output := filepath.Join(localPath, wxName, "pdf", wxTile+".pdf")
+				utils.ToPDF(output, httpURL, cfg.Wkhtmltopdf.Path)
+			}
+			// word
+			if cfg.Pandoc.Enable {
+				output := filepath.Join(localPath, wxName, "pdf", wxTile+".docx")
+				utils.ToWord(f, output, cfg.Pandoc.Path)
+			}
+
+		}(file)
+	}
+	wg.Wait()
+	fmt.Println("全部转换结束！")
+}
+
+// filePaths 返回文件完整路径
 func downloadHtml(urlStr, path, newName string, sem chan struct{}, wg *sync.WaitGroup, filePaths chan string, cfg *config.Config) {
 	defer wg.Done()
 
@@ -141,7 +164,7 @@ func downloadHtml(urlStr, path, newName string, sem chan struct{}, wg *sync.Wait
 	}
 	jsName = utils.Iif(len(newName) > 0, newName, jsName)
 
-	fmt.Println("公众号名称：" + jsName)
+	fmt.Println("公众号名称：", strings.TrimSpace(jsName))
 	baseInfo["activity_Name"] = utils.SanitizeFilename(activityName)
 	baseInfo["js_name"] = utils.SanitizeFilename(jsName)
 	baseInfo["url"] = urlStr
@@ -336,6 +359,8 @@ func downloadHtml(urlStr, path, newName string, sem chan struct{}, wg *sync.Wait
 	// 采集页面信息 URL 替换
 	//protocol := utils.Iif(cfg.Https, "https", "http")
 	html = strings.ReplaceAll(html, "https://badjs.weixinbridge.com", "")
+	// 字体格式处理，防止中文乱码 @see https://github.com/systemmin/wxdown/issues/16#issuecomment-2726465545
+	html = strings.ReplaceAll(html, "仿宋", "FangSong")
 
 	fileName := fmt.Sprintf("%s-%s.html", baseInfo["createTime"][0:10], baseInfo["activity_Name"])
 	join := filepath.Join(path, baseInfo["js_name"], "html", fileName)

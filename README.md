@@ -12,7 +12,8 @@
 ## 功能特点
 
 - 保存公众号文章至本地
-- 支持将 HTML 文章转换为 PDF 格式（需安装 [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html))
+- 支持将 HTML 文章转换为 PDF 格式（安装 [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html))
+- 支持将 HTML 文章转换为 Word 格式（安装 [pandc](https://github.com/jgm/pandoc/releases))
 - 图片、音视频管理
 - 支持首页合集、标签合集保存
 - 保存原始地址
@@ -26,12 +27,15 @@
 
 ## 软件版本
 
-### v1.0.9 (当前版本)
+### v1.1.0 (当前版本)
 
-替换 `wxdown`
-- 解决视频解析导致系统中断 bug [issues#4](https://github.com/systemmin/wxdown/issues/15)
+替换所有文件（不包含 `data`）
 
-[下载地址](https://864000.lanzouu.com/b0hcr5bad) 密码：wxdown
+- 解决部分 HTML 转 PDF 乱码问题 [issues 16](https://github.com/systemmin/wxdown/issues/16#) 。
+- 新增 HTML 转 Word 配置 [config.yaml#L38](https://github.com/systemmin/wxdown/blob/master/config.yaml#L38) ，需单独安装 [pandc](https://github.com/jgm/pandoc/releases) 工具。
+- 优化 Mac 默认配置开启转 PDF 功能时，导致 CPU 高占用问题 [issues 13](https://github.com/systemmin/wxdown/issues/13#) 。
+
+[下载地址](https://864000.lanzouu.com/b0hcyau5e) 密码：3ido
 
 ### [历史版本](https://github.com/systemmin/wxdown/blob/master/CHANGELOG.md)
 

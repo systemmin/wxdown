@@ -16,7 +16,7 @@ import (
 var runMode = "source"
 
 // version 版本号
-var version = "1.0.9"
+var version = "1.1.0"
 
 // listData db map 数据
 var listData = make([]map[string]bool, 0)

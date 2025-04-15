@@ -348,7 +348,9 @@
             if (permission.state === "granted" || permission.state === "prompt") {
                 // 读取剪切板中的文本
                 const text = await navigator.clipboard.readText();
-                console.log("Clipboard content:", text);
+                if (!text || !text.includes("https://mp.weixin.qq.com")) {
+                    return
+                }
                 const urlNode = document.getElementById('collectAddress');
                 const urlText = urlNode.value;
                 let old = [];

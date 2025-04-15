@@ -31,11 +31,22 @@ wkhtmltopdf:
   # window 例如：E:\Program Files\wkhtmltopdf\bin\
   path:
 
+# HTML 转 word 配置
+# pandoc 官方地址：https://pandoc.org/
+# 下载 pandoc 地址 https://github.com/jgm/pandoc/releases/tag/3.6.4
+# path 可选配置
+pandoc:
+  # true | false [开启|关闭]
+  enable: false
+  # linux 例如：/usr/local/Pandoc/
+  # window 例如：C:/Program Files/Pandoc/
+  path:
+
 # 采集线程配置
 thread:
-  # 同时下载 HTML 线程数量
+  # 同时下载 HTML 协程数量
   html: 10
-  # 同时下载图片线程数量
+  # 同时下载图片协程数量
   image: 20
 
 # http 基础认证

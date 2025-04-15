@@ -17,6 +17,10 @@ type Config struct {
 		Enable bool   `yaml:"enable"`
 		Path   string `yaml:"path"`
 	} `yaml:"wkhtmltopdf"`
+	Pandoc struct {
+		Enable bool   `yaml:"enable"`
+		Path   string `yaml:"path"`
+	} `yaml:"pandoc"`
 	Thread struct {
 		Html  int `yaml:"html"`
 		Image int `yaml:"image"`
