@@ -71,10 +71,13 @@
     }
 
     window.addEventListener("message", (e) => {
-        listData = JSON.parse(e.data)
-        if (listData.length > 0) {
-            loading()
+        if(e.data instanceof String){
+            listData = JSON.parse(e.data)
+            if (listData.length > 0) {
+                loading()
+            }
         }
+
     })
 
     main.addEventListener("scroll", () => {
