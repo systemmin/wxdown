@@ -160,10 +160,19 @@ func downloadHtml(urlStr, path, newName string, sem chan struct{}, wg *sync.Wait
 
 	// 公众号名称
 	jsName := doc.Find("#js_name").Text()
-	if len(jsName) == 0 { // 图片轮播集
+	if len(jsName) == 0 {
 		jsName = doc.Find(".wx_follow_nickname").Eq(0).Text()
 		isAlbum = true
+		// 通过 meta 获取文章标题名称
+		sel := doc.Find(`meta[property="og:title"]`)
+		val, exists := sel.Eq(0).Attr("content")
+		if exists {
+			jsName = val
+		}
 	}
+	// 图片合集标识
+	isAlbum = doc.Find("#img_swiper_placeholder").Length() > 0
+
 	jsName = utils.Iif(len(newName) > 0, newName, jsName)
 
 	fmt.Println("公众号名称：", strings.TrimSpace(jsName))
